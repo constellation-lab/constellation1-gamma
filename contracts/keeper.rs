@@ -98,7 +98,7 @@ fn update_option_status(
             Ok(Response::new())
         }
         Some("exercised") => {
-            // TODO: Pay out the option price to the owner.
+            // TODO: Pay out the option price to the owner. call the function below
             Storage::set(env, &option.id, &option);
             Ok(Response::new())
         }
@@ -132,10 +132,60 @@ fn burn_option(
 
     // Check if the sender is the owner of the option.
     if option.owner != msg.sender() {
+        return Err(StdError::generic_err("Unauthorized"));
+    }
 
+    // Burn the option.
+    Storage::remove(env, &option.id);
+    Ok(Response::new())
+}
 
+fn pay_out_option_price(
+    env: Env,
+    msg: MessageInfo,
+    args: Option<Binary>,
+) -> StdResult<Response> {
+    let option = Option::from(args.unwrap());
 
+    // Check if the sender is the owner of the option.
+    if option.owner != msg.sender() {
+        return Err(StdError::generic_err("Unauthorized"));
+    }
 
+    // Pay out the option price to the owner.
+    let amount = option.price;
+    env.transfer(option.owner, amount);
+
+    // Update the option status.
+    option.status = "paid";
+    Storage::set(env, &option.id, &option);
+
+    Ok(Response::new())
+}
+        
+        
+fn refund_option_price(
+    env: Env,
+    msg: MessageInfo,
+    args: Option<Binary>,
+) -> StdResult<Response> {
+    let option = Option::from(args.unwrap());
+
+    // Check if the sender is the owner of the option.
+    if option.owner != msg.sender() {
+        return Err(StdError::generic_err("Unauthorized"));
+    }
+
+    // Refund the option price to the owner.
+    let amount = option.price;
+    env.transfer(option.owner, amount);
+
+    // Update the option status.
+    option.status = "refunded";
+    Storage::set(env, &option.id, &option);
+
+    Ok(Response::new())
+}
 
 /*
         

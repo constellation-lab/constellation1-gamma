@@ -1,285 +1,132 @@
-//The code in lib.rs defines the Calliope contract, which is the main contract of the OpynFinance Cosm WASM rewrite. The contract stores the following information:
-
-//The address of the contract's owner
-//The address of the contract's price oracle
-//The address of the contract's strike oracle
-//The contract also provides the following methods:
-
-//get_option(option_id: OptionId) -> Option<Option>
-//create_option(option: Option) -> Result<(), Error>
-//update_option(option_id: OptionId, option: Option) -> Result<(), Error>
-//delete_option(option_id: OptionId) -> Result<(), Error>
-//get_price(strike: Strike) -> Result<Price, Error>
-//get_strike(price: Price) -> Result<Strike, Error>
-//The get_option() method returns the option with the given id. The create_option() method creates a new option. The update_option() method updates an existing option. The delete_option() method deletes an existing option. The get_price() method returns the price of the given strike. The get_strike() method returns the strike of the given price.
-
-//The Calliope contract is a critical part of the OpynFinance Cosm WASM rewrite. 
-//  It allows users to easily manage their options and ensures that the options are always priced accurately.
-
-
-
-
 
 use cosmwasm_std::{
     entry_point,
-    log,
-    prelude::*,
-    traits::{Get, Queryable},
-    Addr, Bank, Binary, Coin, Env, MessageInfo, Response, Runtime, Storage, WasmQuery,
+    traits::{Checkable, Gettable, Queryable},
+    Binary, Env, MessageInfo, Response, StdResult, Storage,
 };
 
-use crate::option::Option;
-use crate::price_oracle::PriceOracle;
-use crate::strike_oracle::StrikeOracle;
-
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Calliope {
-    pub keeper: Addr,
-    pub price_oracle: Addr,
-    pub strike_oracle: Addr,
+pub struct Option {
+    pub id: u64,
+    pub owner: Option<String>,
+    pub strike: u64,
+    pub price: u64,
+    pub type_: Option<String>,
+    pub status: Option<String>,
 }
 
-impl Calliope {
+impl Option {
     pub fn new(
-        keeper: Addr,
-        price_oracle: Addr,
-        strike_oracle: Addr,
+        id: u64,
+        owner: Option<String>,
+        strike: u64,
+        price: u64,
+        type_: Option<String>,
+        status: Option<String>,
     ) -> Self {
         Self {
-            keeper,
-            price_oracle,
-            strike_oracle,
+            id,
+            owner,
+            strike,
+            price,
+            type_,
+            status,
         }
     }
+}
 
-    pub fn get_option(&self, option_id: OptionId) -> Option<Option> {
-        let option = Option::get(option_id);
-        Some(option)
+impl Gettable for Option {
+    fn get(&self) -> Option<Binary> {
+        Some(bincode::serialize(&self).unwrap())
     }
+}
 
-    pub fn create_option(&mut self, option: Option) -> Result<(), Error> {
-        Option::insert(option)?;
+impl Queryable for Option {
+    fn query(&self, _env: Env, _msg: MessageInfo) -> StdResult<Response> {
+        Ok(Response::new().add_message(self))
+    }
+}
+
+impl Checkable for Option {
+    fn check(&self, _env: Env, _msg: MessageInfo) -> StdResult<()> {
         Ok(())
     }
+}
 
-    pub fn update_option(&mut self, option_id: OptionId, option: Option) -> Result<(), Error> {
-        Option::update(option_id, option)?;
-        Ok(())
-    }
-
-    pub fn delete_option(&mut self, option_id: OptionId) -> Result<(), Error> {
-        Option::remove(option_id)?;
-        Ok(())
-    }
-
-    pub fn get_price(&self, strike: Strike) -> Result<Price, Error> {
-        PriceOracle::get_price(strike)
-    }
-
-    pub fn get_strike(&self, price: Price) -> Result<Strike, Error> {
-        StrikeOracle::get_strike(price)
+impl From<Binary> for Option {
+    fn from(data: Binary) -> Self {
+        bincode::deserialize(&data).unwrap()
     }
 }
 
-impl Get<Calliope> for Storage {
-    fn get(&self, key: &[u8]) -> Option<Calliope> {
-        self.get(key)
-    }
+fn entry_point(
+    env: Env,
+    _msg: MessageInfo,
+    _args: Option<Binary>,
+) -> StdResult<Response> {
+    Ok(Response::new())
 }
 
-impl Queryable for Calliope {
-    fn query(&self, _env: Env, msg: MessageInfo) -> Response {
-        let calliope = self.clone();
-        Response::new().add_message(calliope)
-    }
+fn get_option_by_id(
+    env: Env,
+    _msg: MessageInfo,
+    id: u64,
+) -> StdResult<Option> {
+    let option = Storage::get(env, &id)?;
+    Ok(option)
 }
 
-entry_point!(|| {
-    impl<'a> From<&'a Calliope> for Binary {
-        fn from(calliope: &'a Calliope) -> Self {
-            Binary::from(calliope.to_bytes())
+fn get_option_by_owner(
+    env: Env,
+    _msg: MessageInfo,
+    owner: String,
+) -> StdResult<Option> {
+    let options = Storage::get_all(env)?;
+    for option in options {
+        if option.owner == owner {
+            return Ok(option);
         }
     }
-
-    impl<'a> From<Binary> for Calliope {
-        fn from(binary: Binary) -> Self {
-            Calliope::from_slice(&binary)
-        }
-    }
-
-    impl<'a> From<&'a [u8]> for Calliope {
-        fn from(bytes: &'a [u8]) -> Self {
-            Calliope::decode(bytes).unwrap()
-        }
-    }
-
-    impl<'a> From<Option<Calliope>> for Binary {
-        fn from(calliope: Option<Calliope>) -> Self {
-            match calliope {
-                Some(calliope) => Binary::from(calliope),
-                None => Binary::default(),
-            }
-        }
-    }
-
-    impl<'a> From<Binary> for Option<Calliope> {
-        fn from(binary: Binary) -> Self {
-            match binary {
-                Binary::default() => None,
-                _ => Some(Calliope::from_slice(&binary)),
-            }
-        }
-    }
-
-    impl<'a> From<&'a [u8]> for Option<Calliope> {
-        fn from(bytes: &'a [u8]) -> Self {
-            match Calliope::decode(bytes) {
-                Ok(calliope) => Some(calliope),
-                Err(_) => None,
-            }
-        }
-    }
-
-    let calliope = Calliope::new(
-        env::sender(),
-        env::message().sender,
-//continue
-      //env::message().sender(),
-    );
-
-    Storage::insert(&calliope);
-
-    log!("Created Calliope");
-
-    Response::new().add_message(calliope)
-});
-    
-    
-    
-    
-    
-    /*
-    
-    use cosmwasm_std::{
-    entry_point,
-    log,
-    prelude::*,
-    traits::{Get, Queryable},
-    Addr, Bank, Binary, Coin, Env, MessageInfo, Response, Runtime, Storage, WasmQuery,
-};
-
-use crate::option::Option;
-use crate::price_oracle::PriceOracle;
-use crate::strike_oracle::StrikeOracle;
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Calliope {
-    pub keeper: Addr,
-    pub price_oracle: Addr,
-    pub strike_oracle: Addr,
+    Err(StdError::generic_err("Option not found"))
 }
 
-impl Calliope {
-    pub fn new(
-        keeper: Addr,
-        price_oracle: Addr,
-        strike_oracle: Addr,
-    ) -> Self {
-        Self {
-            keeper,
-            price_oracle,
-            strike_oracle,
-        }
-    }
-
-    pub fn get_option(&self, option_id: OptionId) -> Option<Option> {
-        let option = Option::get(option_id);
-        Some(option)
-    }
-
-    pub fn create_option(&mut self, option: Option) -> Result<(), Error> {
-        Option::insert(option)?;
-        Ok(())
-    }
-
-    pub fn update_option(&mut self, option_id: OptionId, option: Option) -> Result<(), Error> {
-        Option::update(option_id, option)?;
-        Ok(())
-    }
-
-    pub fn delete_option(&mut self, option_id: OptionId) -> Result<(), Error> {
-        Option::remove(option_id)?;
-        Ok(())
-    }
-
-    pub fn get_price(&self, strike: Strike) -> Result<Price, Error> {
-        PriceOracle::get_price(strike)
-    }
-
-    pub fn get_strike(&self, price: Price) -> Result<Strike, Error> {
-        StrikeOracle::get_strike(price)
-    }
+fn get_all_options(
+    env: Env,
+    _msg: MessageInfo,
+) -> StdResult<Vec<Option>> {
+    let options = Storage::get_all(env)?;
+    Ok(options)
 }
 
-impl Get<Calliope> for Storage {
-    fn get(&self, key: &[u8]) -> Option<Calliope> {
-        self.get(key)
+fn get_strike_by_price(
+    env: Env,
+    _msg: MessageInfo,
+    price: u64,
+) -> StdResult<Option> {
+    let options = Storage::get_all(env)?;
+    for option in options {
+        if option.price == price {
+            return Ok(option);
+        }
     }
+    Err(StdError::generic_err("Option not found"))
 }
 
-impl Queryable for Calliope {
-    fn query(&self, _env: Env, msg: MessageInfo) -> Response {
-        let calliope = self.clone();
-        Response::new().add_message(calliope)
+fn get_price_by_strike(
+    env: Env,
+    _msg: MessageInfo,
+    strike: u64,
+) -> StdResult<Option> {
+    let options = Storage::get_all(env)?;
+    for option in options {
+        if option.strike == strike {
+            return Ok(option);
+        }
     }
+    Err(StdError::generic_err("Option not found"))
 }
 
-entry_point!(|| {
-    impl<'a> From<&'a Calliope> for Binary {
-        fn from(calliope: &'a Calliope) -> Self {
-            Binary::from(calliope.to_bytes())
-        }
-    }
+fn main() {
+    entry_point::<Option>()
+}
 
-    impl<'a> From<Binary> for Calliope {
-        fn from(binary: Binary) -> Self {
-            Calliope::from_slice(&binary)
-        }
-    }
-
-    impl<'a> From<&'a [u8]> for Calliope {
-        fn from(bytes: &'a [u8]) -> Self {
-            Calliope::decode(bytes).unwrap()
-        }
-    }
-
-    impl<'a> From<Option<Calliope>> for Binary {
-        fn from(calliope: Option<Calliope>) -> Self {
-            match calliope {
-                Some(calliope) => Binary::from(calliope),
-                None => Binary::default(),
-            }
-        }
-    }
-
-    impl<'a> From<Binary> for Option<Calliope> {
-        fn from(binary: Binary) -> Self {
-            match binary {
-                Binary::default() => None,
-                _ => Some(Calliope::from_slice(&binary)),
-            }
-        }
-    }
-
-    impl<'a> From<&'a [u8]> for Option<Calliope> {
-        fn from(bytes: &'a [u8]) -> Self {
-            match Calliope::decode(bytes) {
-                Ok(calliope) => Some(calliope),
-                Err(_) => None,
-            }
-        }
-    
-
-    
-    
-    */

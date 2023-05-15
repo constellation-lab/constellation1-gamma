@@ -153,3 +153,133 @@ entry_point!(|| {
 
     Response::new().add_message(calliope)
 });
+    
+    
+    
+    
+    
+    /*
+    
+    use cosmwasm_std::{
+    entry_point,
+    log,
+    prelude::*,
+    traits::{Get, Queryable},
+    Addr, Bank, Binary, Coin, Env, MessageInfo, Response, Runtime, Storage, WasmQuery,
+};
+
+use crate::option::Option;
+use crate::price_oracle::PriceOracle;
+use crate::strike_oracle::StrikeOracle;
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Calliope {
+    pub keeper: Addr,
+    pub price_oracle: Addr,
+    pub strike_oracle: Addr,
+}
+
+impl Calliope {
+    pub fn new(
+        keeper: Addr,
+        price_oracle: Addr,
+        strike_oracle: Addr,
+    ) -> Self {
+        Self {
+            keeper,
+            price_oracle,
+            strike_oracle,
+        }
+    }
+
+    pub fn get_option(&self, option_id: OptionId) -> Option<Option> {
+        let option = Option::get(option_id);
+        Some(option)
+    }
+
+    pub fn create_option(&mut self, option: Option) -> Result<(), Error> {
+        Option::insert(option)?;
+        Ok(())
+    }
+
+    pub fn update_option(&mut self, option_id: OptionId, option: Option) -> Result<(), Error> {
+        Option::update(option_id, option)?;
+        Ok(())
+    }
+
+    pub fn delete_option(&mut self, option_id: OptionId) -> Result<(), Error> {
+        Option::remove(option_id)?;
+        Ok(())
+    }
+
+    pub fn get_price(&self, strike: Strike) -> Result<Price, Error> {
+        PriceOracle::get_price(strike)
+    }
+
+    pub fn get_strike(&self, price: Price) -> Result<Strike, Error> {
+        StrikeOracle::get_strike(price)
+    }
+}
+
+impl Get<Calliope> for Storage {
+    fn get(&self, key: &[u8]) -> Option<Calliope> {
+        self.get(key)
+    }
+}
+
+impl Queryable for Calliope {
+    fn query(&self, _env: Env, msg: MessageInfo) -> Response {
+        let calliope = self.clone();
+        Response::new().add_message(calliope)
+    }
+}
+
+entry_point!(|| {
+    impl<'a> From<&'a Calliope> for Binary {
+        fn from(calliope: &'a Calliope) -> Self {
+            Binary::from(calliope.to_bytes())
+        }
+    }
+
+    impl<'a> From<Binary> for Calliope {
+        fn from(binary: Binary) -> Self {
+            Calliope::from_slice(&binary)
+        }
+    }
+
+    impl<'a> From<&'a [u8]> for Calliope {
+        fn from(bytes: &'a [u8]) -> Self {
+            Calliope::decode(bytes).unwrap()
+        }
+    }
+
+    impl<'a> From<Option<Calliope>> for Binary {
+        fn from(calliope: Option<Calliope>) -> Self {
+            match calliope {
+                Some(calliope) => Binary::from(calliope),
+                None => Binary::default(),
+            }
+        }
+    }
+
+    impl<'a> From<Binary> for Option<Calliope> {
+        fn from(binary: Binary) -> Self {
+            match binary {
+                Binary::default() => None,
+                _ => Some(Calliope::from_slice(&binary)),
+            }
+        }
+    }
+
+    impl<'a> From<&'a [u8]> for Option<Calliope> {
+        fn from(bytes: &'a [u8]) -> Self {
+            match Calliope::decode(bytes) {
+                Ok(calliope) => Some(calliope),
+                Err(_) => None,
+            }
+        }
+    
+
+    
+    
+    */

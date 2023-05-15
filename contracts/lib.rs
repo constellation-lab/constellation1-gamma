@@ -132,6 +132,8 @@ fn main() {
         
         /*
         
+        The code is complete as is, but there are a few things to keep in mind. First, the get_option_by_id(), get_option_by_owner(), get_all_options(), get_strike_by_price(), and get_price_by_strike() functions are asynchronous. This means that they will return a future that resolves to the option, owner, list of options, strike, or price. Second, the get_option_by_id(), get_option_by_owner(), get_all_options(), get_strike_by_price(), and get_price_by_strike() functions can fail if the option, owner, list of options, strike, or price is not found.
+        
         lib.rs
 
 `impl StrikeOracle {

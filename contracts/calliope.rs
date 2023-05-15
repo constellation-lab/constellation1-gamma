@@ -37,16 +37,20 @@ pub struct Calliope {
 
 impl Calliope {
     pub fn new(
-        keeper: Addr,
-        price_oracle: Addr,
-        strike_oracle: Addr,
-    ) -> Self {
-        Self {
-            keeper,
-            price_oracle,
-            strike_oracle,
-        }
+    keeper: Addr,
+    price_oracle: Addr,
+    strike_oracle: Addr,
+    user: Addr,
+) -> Self {
+    Self {
+        keeper,
+        price_oracle,
+        strike_oracle,
+        user,
     }
+}
+    
+
 
     pub fn get_option(&self, option_id: OptionId) -> Option<Option> {
         let option = Option::get(option_id);

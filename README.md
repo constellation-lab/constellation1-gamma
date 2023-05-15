@@ -189,6 +189,12 @@ I hope this is what you were looking for. Let me know if you have any other ques
 
 Yes, the Opyn Finance Cosm WASM contracts can be deployed to Juno. To do this, you will need to make the following changes to the deployment scripts:
 
+
+
+The Neutron project you linked is a smart contract platform secured by the Cosmos Hub. It is still under development, but it has the potential to be a powerful tool for building decentralized applications. The Juno project you linked is a decentralized exchange built on the Cosmos SDK. It is already live and has been gaining popularity in recent months.
+
+It is difficult to say which project is better at this point, as they are both still under development. However, I would say that Neutron has the potential to be more powerful, as it is a smart contract platform. Juno is a decentralized exchange, which is a specific type of application. If you are looking for a platform to build decentralized applications, then Neutron is a good choice. If you are looking for a decentralized exchange, then Juno is a good choice.
+
 In the deploy.sh script, change the CHAIN_ID variable to JUNO_CHAIN_ID.
 In the anchor.js file, change the chainId property to JUNO_CHAIN_ID.
 Once you have made these changes, you can deploy the Opyn Finance Cosm WASM contracts to Juno by running the following command:

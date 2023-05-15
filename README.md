@@ -63,3 +63,34 @@ Added support for multiple expiry dates
 Added support for multiple collateral types
 Added support for multiple settlement types
  this rewrite makes conste1_option Finance more secure, scalable, and user-friendly.
+ 
+ 
+ 
+ 
+README.md
+
+Op Cosm Wasm
+Op Cosm Wasm is a decentralized option trading platform built on the Cosmos SDK. Opyn Cosm Wasm allows users to trade options on a variety of underlying assets, including Bitcoin, Ethereum, and USD Coin.
+
+Opyn Cosm Wasm is a secure and reliable platform that is backed by a team of experienced developers. Opyn Cosm Wasm is committed to providing users with a safe and efficient way to trade options.
+
+Features
+Trade options on a variety of underlying assets
+Secure and reliable platform
+Backed by a team of experienced developers
+Easy to use interface
+Competitive fees
+Benefits
+Opyn Cosm Wasm allows users to trade options on a variety of underlying assets, including Bitcoin, Ethereum, and USD Coin.
+Opyn Cosm Wasm is a secure and reliable platform that is backed by a team of experienced developers.
+Opyn Cosm Wasm is committed to providing users with a safe and efficient way to trade options.
+How to use Opyn Cosm Wasm
+To use Opyn Cosm Wasm, users must first create an account and deposit funds. Once an account has been created and funds have been deposited, users can begin trading options.
+
+To trade an option, users must first select the underlying asset and the strike price. Users can then specify the amount of options they want to buy or sell. Once the order has been placed, it will be executed on the Opyn Cosm Wasm order book.
+
+Fees
+Op Cosm Wasm charges a 0.5% fee for all trades. This fee is used to cover the costs of operating the platform and providing users with a secure and reliable service.
+
+Contact
+For more information, please visit the Op Cosm Wasm website or contact the Opyn Cosm Wasm team at [email protected]

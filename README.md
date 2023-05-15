@@ -1,5 +1,7 @@
 # constelllation1_options
 
+The GammaProtocol is a decentralized options protocol that allows users to create arbitrary option tokens. It was originally written in Solidity, but I rewrote it in CosmWasm. The rewrite made the GammaProtocol more secure, performant, and scalable. It also made it easier to integrate with other CosmWasm-based projects.
+
 Root Folder
   - README.md
   - LICENSE

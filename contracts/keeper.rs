@@ -1,3 +1,277 @@
+use cosmwasm_std::{
+    entry_point,
+    traits::{Checkable, Gettable, Queryable},
+    Binary, Env, MessageInfo, Response, StdResult, Storage,
+};
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Option {
+    pub id: u64,
+    pub owner: Option<String>,
+    pub strike: u64,
+    pub price: u64,
+    pub type_: Option<String>,
+    pub status: Option<String>,
+}
+
+impl Option {
+    pub fn new(
+        id: u64,
+        owner: Option<String>,
+        strike: u64,
+        price: u64,
+        type_: Option<String>,
+        status: Option<String>,
+    ) -> Self {
+        Self {
+            id,
+            owner,
+            strike,
+            price,
+            type_,
+            status,
+        }
+    }
+}
+
+impl Gettable for Option {
+    fn get(&self) -> Option<Binary> {
+        Some(bincode::serialize(&self).unwrap())
+    }
+}
+
+impl Queryable for Option {
+    fn query(&self, _env: Env, _msg: MessageInfo) -> StdResult<Response> {
+        Ok(Response::new().add_message(self))
+    }
+}
+
+impl Checkable for Option {
+    fn check(&self, _env: Env, _msg: MessageInfo) -> StdResult<()> {
+        Ok(())
+    }
+}
+
+impl From<Binary> for Option {
+    fn from(data: Binary) -> Self {
+        bincode::deserialize(&data).unwrap()
+    }
+}
+
+fn constructor(
+    env: Env,
+    _msg: MessageInfo,
+    _args: Option<Binary>,
+) -> StdResult<Response> {
+    Ok(Response::new())
+}
+
+fn initialize(
+    env: Env,
+    _msg: MessageInfo,
+    _args: Option<Binary>,
+) -> StdResult<Response> {
+    Ok(Response::new())
+}
+
+fn update_option_status(
+    env: Env,
+    msg: MessageInfo,
+    args: Option<Binary>,
+) -> StdResult<Response> {
+    let option = Option::from(args.unwrap());
+
+    // Check if the sender is the owner of the option.
+    if option.owner != msg.sender() {
+        return Err(StdError::generic_err("Unauthorized"));
+    }
+
+    // Update the option status.
+    match option.status {
+        Some("open") => {
+            Storage::set(env, &option.id, &option);
+            Ok(Response::new())
+        }
+        Some("closed") => {
+            // TODO: Refund the option price to the owner.
+            Storage::set(env, &option.id, &option);
+            Ok(Response::new())
+        }
+        Some("exercised") => {
+            // TODO: Pay out the option price to the owner.
+            Storage::set(env, &option.id, &option);
+            Ok(Response::new())
+        }
+        _ => Err(StdError::generic_err("Invalid option status")),
+    }
+}
+
+fn mint_option(
+    env: Env,
+    msg: MessageInfo,
+    args: Option<Binary>,
+) -> StdResult<Response> {
+    let option = Option::from(args.unwrap());
+
+    // Check if the sender is the owner of the option.
+    if option.owner != msg.sender() {
+        return Err(StdError::generic_err("Unauthorized"));
+    }
+
+    // Mint the option.
+    Storage::insert(&option);
+    Ok(Response::new())
+}
+
+fn burn_option(
+    env: Env,
+    msg: MessageInfo,
+    args: Option<Binary>,
+) -> StdResult<Response> {
+    let option = Option::from(args.unwrap());
+
+    // Check if the sender is the owner of the option.
+    if option.owner != msg.sender() {
+
+
+
+
+
+/*
+        
+        use cosmwasm_std::{
+    entry_point,
+    traits::{Checkable, Gettable, Queryable},
+    Binary, Env, MessageInfo, Response, StdResult, Storage,
+};
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Option {
+    pub id: u64,
+    pub owner: Option<String>,
+    pub strike: u64,
+    pub price: u64,
+    pub type_: Option<String>,
+    pub status: Option<String>,
+}
+
+impl Option {
+    pub fn new(
+        id: u64,
+        owner: Option<String>,
+        strike: u64,
+        price: u64,
+        type_: Option<String>,
+        status: Option<String>,
+    ) -> Self {
+        Self {
+            id,
+            owner,
+            strike,
+            price,
+            type_,
+            status,
+        }
+    }
+}
+
+impl Gettable for Option {
+    fn get(&self) -> Option<Binary> {
+        Some(bincode::serialize(&self).unwrap())
+    }
+}
+
+impl Queryable for Option {
+    fn query(&self, _env: Env, _msg: MessageInfo) -> StdResult<Response> {
+        Ok(Response::new().add_message(self))
+    }
+}
+
+impl Checkable for Option {
+    fn check(&self, _env: Env, _msg: MessageInfo) -> StdResult<()> {
+        Ok(())
+    }
+}
+
+impl From<Binary> for Option {
+    fn from(data: Binary) -> Self {
+        bincode::deserialize(&data).unwrap()
+    }
+}
+
+fn entry_point(
+    env: Env,
+    _msg: MessageInfo,
+    _args: Option<Binary>,
+) -> StdResult<Response> {
+    Ok(Response::new())
+}
+
+fn update_option_status(
+    env: Env,
+    _msg: MessageInfo,
+    id: u64,
+    status: Option<String>,
+) -> StdResult<()> {
+    let option = Storage::get(env, &id)?;
+    option.status = status;
+    Storage::insert(&option);
+    log!("Updated option status");
+    Response::new().add_message(option)
+}
+
+fn mint_option(
+    env: Env,
+    _msg: MessageInfo,
+    option: Option,
+) -> StdResult<()> {
+    Storage::insert(&option);
+    log!("Minted option");
+    Response::new().add_message(option)
+}
+
+fn burn_option(
+    env: Env,
+    _msg: MessageInfo,
+    id: u64,
+) -> StdResult<()> {
+    Storage::remove(env, &id);
+    log!("Burned option");
+    Response::new()
+}
+
+fn exercise_option(
+    env: Env,
+    _msg: MessageInfo,
+    id: u64,
+) -> StdResult<()> {
+    // TODO: Implement exercise_option()
+    log!("Exercised option");
+    Response::new()
+}
+
+fn refund_option(
+    env: Env,
+    _msg: MessageInfo,
+    id: u64,
+) -> StdResult<()> {
+    // TODO: Implement refund_option()
+    log!("Refunded option");
+    Response::new()
+}
+
+fn main() {
+    entry_point::<Option>()
+}
+
+        
+        
+        
+        
+        */
+
+
+
 //The Keeper contract is responsible for managing the options on the OpynFinance Cosm WASM rewrite. It stores the following information:
 
 //The address of the contract's owner
@@ -15,7 +289,7 @@
 //It allows users to easily manage their options and ensures that the options are always priced accurately.
 
 
-
+/*
 use cosmwasm_std::{
     entry_point,
     log,
@@ -149,7 +423,7 @@ entry_point!(|| {
     log!("Created Keeper");
 
     Response::new().add_message(keeper)
-});
+});*/
 
 //This code creates a new Keeper contract and stores it in the contract's storage. The contract is then initialized with the following information:
 

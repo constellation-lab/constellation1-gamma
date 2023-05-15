@@ -1,0 +1,206 @@
+use cosmwasm_std::{
+    entry_point,
+    log,
+    prelude::*,
+    traits::{Get, Queryable},
+    Addr, Bank, Binary, Coin, Env, MessageInfo, Response, Runtime, Storage, WasmQuery,
+};
+
+use crate::option::Option;
+use crate::price_oracle::PriceOracle;
+use crate::strike_oracle::StrikeOracle;
+
+#[test]
+fn test_get_option() {
+    let option = Option::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::insert(&option);
+
+    assert_eq!(
+        Option::get(option.id),
+        Some(option),
+        "Expected to get the option"
+    );
+}
+
+#[test]
+fn test_update_option() {
+    let option = Option::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::insert(&option);
+
+    let new_option = Option::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::update(option.id, new_option);
+
+    assert_eq!(
+        Option::get(option.id),
+        Some(new_option),
+        "Expected to update the option"
+    );
+}
+
+#[test]
+fn test_get_price() {
+    let price = Price::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::insert(&price);
+
+    assert_eq!(
+        PriceOracle::get_price(price.strike),
+        Some(price),
+        "Expected to get the price"
+    );
+}
+
+#[test]
+fn test_update_price() {
+    let price = Price::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::insert(&price);
+
+    let new_price = Price::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::update(price.strike, new_price);
+
+    assert_eq!(
+        PriceOracle::get_price(price.strike),
+        Some(new_price),
+        "Expected to update the price"
+    );
+}
+
+#[test]
+fn test_get_strike() {
+    let strike = Strike::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::insert(&strike);
+
+    assert_eq!(
+        StrikeOracle::get_strike(strike.strike),
+        Some(strike),
+        "Expected to get the strike"
+    );
+}
+
+#[test]
+fn test_update_strike() {
+    let strike = Strike::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::insert(&strike);
+
+    let new_strike = Strike::new(
+        env::sender(),
+        env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
+
+    Storage::update(strike.strike, new_strike);
+
+    assert_eq!(
+        StrikeOracle::get_strike(strike.strike),
+        Some(new_strike),
+        "Expected to update the strike"
+    );
+}
+
+/*
+tests the following:
+
+The ability to get an option by ID
+The ability to update an option
+The ability to get the price of an option
+The ability to update the price of an option
+The ability to get the strike of an option
+The ability to update the strike of an option
+The code does this by creating a new option, inserting it into storage, and then testing to see if the option can be retrieved from storage. 
+The code also tests to see if the option can be updated, and if the price and strike of the option can be updated.
+
+
+
+
+integration test: tests how the different units of code in the Opyn Cosm Wasm rewrite interact with each other.
+
+To make the code exhaustive,  add the following tests:
+
+Tests for edge cases, such as trying to get an option that does not exist, or trying to update an option that does not exist.
+Tests for performance, such as measuring how long it takes to get an option, update an option, or get the price or strike of an option.
+Tests for security, such as trying to exploit vulnerabilities in the code.
+ also add tests for different scenarios, such as:
+
+Creating a new option
+Updating an option
+Getting the price of an option
+Getting the strike of an option
+Canceling an option
+Exercising an option
+Closing an option
+*/

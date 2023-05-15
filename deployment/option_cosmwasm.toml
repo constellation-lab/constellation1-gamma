@@ -1,0 +1,21 @@
+# This file is used to configure the Opyn Cosm Wasm contract.
+
+# The following fields are required:
+
+# - address: The address of the contract on the blockchain.
+# - port: The port of the blockchain node.
+# - chain_id: The chain ID of the blockchain.
+
+# The following fields are optional:
+
+# - gas: The amount of gas to allocate to the contract.
+# - gas_price: The gas price to use for the transaction.
+# - timeout: The timeout for the transaction.
+
+address: ""
+port: 8000
+chain_id: ""
+
+# gas: 10000000000
+# gas_price: 1000000000000000000shannon
+# timeout: 60000

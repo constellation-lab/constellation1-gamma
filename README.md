@@ -1,4 +1,4 @@
-# const1_options
+# constelllation1_options
 
 Root Folder
   - README.md

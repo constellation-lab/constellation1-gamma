@@ -1,4 +1,4 @@
-# conste1_options
+# const1_options
 
 Root Folder
   - README.md

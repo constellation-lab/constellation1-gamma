@@ -94,3 +94,10 @@ Op Cosm Wasm charges a 0.5% fee for all trades. This fee is used to cover the co
 
 Contact
 For more information, please visit the Op Cosm Wasm website or contact the Opyn Cosm Wasm team at [email protected]
+
+UI
+The updated OpynFinance UI is a web application that allows users to trade options on a variety of underlying assets. The UI is built using React and TypeScript. The UI is connected to the OpynFinance Cosm WASM contracts using the AnchorJS library.
+
+The updated OpynFinance UI is a significant improvement over the previous version. The UI is more user-friendly and easier to use. The UI is also more secure and reliable.
+
+

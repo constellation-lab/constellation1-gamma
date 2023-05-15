@@ -139,8 +139,25 @@ entry_point!(|| {
     let calliope = Calliope::new(
         env::sender(),
         env::message().
+    
+// addition below
+    
+        env::message().sender(),
+        env::message().sender(),
+    );
 
-      
+    Storage::insert(&calliope);
+
+    log!("Created Calliope");
+
+    Response::new().add_message(calliope)
+});
+    
+ // This code creates a new Calliope contract and stores it in the contract's storage. The contract is then initialized with the following information:
+//The address of the contract's owner
+//The address of the contract's price oracle
+//The address of the contract's strike oracle
+//The contract is then logged and a response is returned.
       
       
       

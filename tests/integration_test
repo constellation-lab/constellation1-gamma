@@ -203,4 +203,10 @@ Getting the strike of an option
 Canceling an option
 Exercising an option
 Closing an option
+
+
+tested the following:
+
+tested a few other scenarios, such as creating a new option, canceling an option, and exercising an option. 
+
 */

@@ -1,0 +1,23 @@
+option_cosmwasm.yaml
+
+# This file is used to deploy the Opyn Cosm Wasm contract to a blockchain.
+
+# The following fields are required:
+
+# - name: The name of the contract.
+# - source: The path to the contract's WASM file.
+# - constructor_args: The constructor arguments for the contract.
+
+# The following fields are optional:
+
+# - gas: The amount of gas to allocate to the contract.
+# - gas_price: The gas price to use for the transaction.
+# - timeout: The timeout for the transaction.
+
+name: "OpynCosmWasm"
+source: "target/wasm32-unknown-unknown/release/opyn_cosmwasm.wasm"
+constructor_args: []
+
+# gas: 10000000000
+# gas_price: 1000000000000000000shannon
+# timeout: 60000

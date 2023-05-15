@@ -185,3 +185,16 @@ Use code with caution. Learn more
 I hope this is what you were looking for. Let me know if you have any other questions.
 
 
+
+
+Yes, the Opyn Finance Cosm WASM contracts can be deployed to Juno. To do this, you will need to make the following changes to the deployment scripts:
+
+In the deploy.sh script, change the CHAIN_ID variable to JUNO_CHAIN_ID.
+In the anchor.js file, change the chainId property to JUNO_CHAIN_ID.
+Once you have made these changes, you can deploy the Opyn Finance Cosm WASM contracts to Juno by running the following command:
+
+Code snippet
+make deploy
+Use code with caution. Learn more
+
+

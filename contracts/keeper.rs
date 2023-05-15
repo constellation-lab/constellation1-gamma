@@ -94,17 +94,20 @@ fn update_option_status(
         }
         Some("closed") => {
             // TODO: Refund the option price to the owner.
+            refund_option_price(env, msg, args);
             Storage::set(env, &option.id, &option);
             Ok(Response::new())
         }
         Some("exercised") => {
-            // TODO: Pay out the option price to the owner. call the function below
+            // TODO: Pay out the option price to the owner.
+            pay_out_option_price(env, msg, args);
             Storage::set(env, &option.id, &option);
             Ok(Response::new())
         }
         _ => Err(StdError::generic_err("Invalid option status")),
     }
 }
+
 
 fn mint_option(
     env: Env,

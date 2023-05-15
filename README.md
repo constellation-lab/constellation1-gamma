@@ -101,3 +101,87 @@ The updated OpynFinance UI is a web application that allows users to trade optio
 The updated OpynFinance UI is a significant improvement over the previous version. The UI is more user-friendly and easier to use. The UI is also more secure and reliable.
 
 
+
+----
+
+
+To run the entire Opyn Finance Cosm WASM rewrite on the Neutron blockchain, you will need to do the following:
+
+Install the following dependencies:
+
+Golang
+CosmWasm
+AnchorJS
+Neutron
+Clone the Opyn Finance repo:
+
+Code snippet
+ ```git clone https://github.com/opyn/opyn_finance.git
+Use code with caution. Learn more
+Code snippet
+
+Use code with caution. Learn more
+Go to the Opyn Finance directory:
+
+Code snippet
+ ```cd opyn_finance
+Use code with caution. Learn more
+Code snippet
+
+Use code with caution. Learn more
+Build the Cosm WASM contracts:
+
+Code snippet
+ ```make build
+Use code with caution. Learn more
+Code snippet
+
+Use code with caution. Learn more
+Deploy the Cosm WASM contracts to the Neutron blockchain:
+
+Code snippet
+ ```make deploy
+Use code with caution. Learn more
+Code snippet
+
+Use code with caution. Learn more
+Start the Opyn Finance UI:
+
+Code snippet
+ ```make dev
+Use code with caution. Learn more
+Code snippet
+
+Use code with caution. Learn more
+Open your web browser and go to <http://localhost:3000>.
+
+You should now be able to use the Opyn Finance UI to trade options on the Neutron blockchain.
+
+I hope this is what you were looking for. Let me know if you have any other questions.
+
+profile picture
+how is neutron specified in the make deploy command
+View other drafts
+
+
+
+
+
+
+
+
+
+
+The Neutron blockchain can be specified in the make deploy command by setting the NEUTRON_CHAIN_ID environment variable. For example, to deploy the Opyn Finance Cosm WASM contracts to the Neutron testnet, you would use the following command:
+
+Code snippet
+NEUTRON_CHAIN_ID=testnet make deploy
+Use code with caution. Learn more
+To deploy the Opyn Finance Cosm WASM contracts to the Neutron mainnet, you would use the following command:
+
+Code snippet
+NEUTRON_CHAIN_ID=mainnet make deploy
+Use code with caution. Learn more
+I hope this is what you were looking for. Let me know if you have any other questions.
+
+

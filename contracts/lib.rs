@@ -129,4 +129,42 @@ fn get_price_by_strike(
 fn main() {
     entry_point::<Option>()
 }
+        
+        /*
+        
+        lib.rs
+
+`impl StrikeOracle {
+pub fn new(
+keeper: Addr,
+price_oracle: Addr,
+) -> Self {
+Self {
+keeper,
+price_oracle,
+}
+}
+
+pub fn get_strike(&self, strike: Strike) -> Result<Price, Error> {
+PriceOracle::get_strike(strike)
+}
+
+pub fn update_strike(&mut self, strike: Strike, price: Price) -> Result<(), Error> {
+PriceOracle::update_strike(strike, price)
+}
+}
+
+impl Get<StrikeOracle> for Storage {
+fn get(&self, key: &[u8]) -> Option<StrikeOracle> {
+self.get(key)
+}
+}
+
+impl Queryable for StrikeOracle {
+fn query(&self, _env: Env, msg: MessageInfo) -> Response {
+let strike_oracle = self.clone();
+Response::new().add_message(strike_oracle)
+}
+}
+        */
 

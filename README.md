@@ -112,13 +112,15 @@ Use code with caution. Learn more
 Go to the Opyn Finance directory:
 
 
- ```cd opyn_finance
+ ```
+ cd opyn_finance
 ```
 Build the Cosm WASM contracts:
 
 
- ```make build
-```
+ ``1
+ make build
+  ```
 Deploy the Cosm WASM contracts to the Neutron blockchain:
 
 
@@ -127,7 +129,8 @@ Deploy the Cosm WASM contracts to the Neutron blockchain:
 Start the Opyn Finance UI:
 
 
- ```make dev
+ ```
+ make dev
 ```
 
 Open your web browser and go to <http://localhost:3000>.

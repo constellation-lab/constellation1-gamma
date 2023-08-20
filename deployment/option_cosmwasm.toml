@@ -12,9 +12,9 @@
 # - gas_price: The gas price to use for the transaction.
 # - timeout: The timeout for the transaction.
 
-address: ""
-port: 8000
-chain_id: ""
+address= ""
+port= 8000
+chain_id= ""
 
 # gas: 10000000000
 # gas_price: 1000000000000000000shannon

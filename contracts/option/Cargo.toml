@@ -19,3 +19,6 @@ thiserror = "1.0.31"
 
 [dev-dependencies]
 cw-multi-test = "0.13.4"
+
+[profile.release]
+debug = false

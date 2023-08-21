@@ -8,6 +8,7 @@ use crate::state::{State, CONFIG, Data,OPTION_LIST,CREATOR_LIST,OWNER_LIST,MARKE
 
 // like solidity's constractor func, just run once when the contract init.
 #[entry_point]
+#[allow(dead_code)]
 pub fn instantiate(
     deps: DepsMut,
     env: Env,
@@ -26,6 +27,7 @@ pub fn instantiate(
 
 //The transaction msg will first come here, and the fn will route them to solver
 #[entry_point]
+#[allow(dead_code)]
 pub fn execute(
     deps: DepsMut,
     env: Env,
@@ -52,7 +54,7 @@ pub fn execute_execute(
     id:u64,
 
 )-> Result<Response,ContractError>{
-    let mut option = match OPTION_LIST.load(deps.storage,id ){
+    let option = match OPTION_LIST.load(deps.storage,id ){
         Ok(option)=> option,
         Err(error) => return Err(ContractError::Std(error)),
     };
@@ -61,9 +63,7 @@ pub fn execute_execute(
         return Err(ContractError::Unauthorized {});
     }
     if env.block.time >= option.expires {
-        return Err(ContractError::OptionExpired {
-            expired: option.expires,
-        });
+        return Err(ContractError::OptionExpired { expired: option.expires });
     }
     if info.funds != option.counter_offer {
         return Err(ContractError::CounterOfferMismatch {
@@ -107,9 +107,7 @@ pub fn execute_transfer(
         return Err(ContractError::Unauthorized {});
     }
     if env.block.time >= option.expires {
-        return Err(ContractError::OptionExpired {
-            expired: option.expires,
-        });
+        return Err(ContractError::OptionExpired { expired: option.expires });
     }
 
     //rm old owner
@@ -147,9 +145,7 @@ pub fn execute_update_price(
     };
 
     if env.block.time >= option.expires {
-        return Err(ContractError::OptionExpired {
-            expired: option.expires,
-        });
+        return Err(ContractError::OptionExpired { expired: option.expires });
     }
     if info.sender != option.owner{
         return Err(ContractError::Unauthorized {})
@@ -183,9 +179,7 @@ pub fn execute_buy(
         });
     }
     if env.block.time >= option.expires {
-        return Err(ContractError::OptionExpired {
-            expired: option.expires,
-        });
+        return Err(ContractError::OptionExpired { expired: option.expires });
     }
     //send the token buyer paid to the owner
     let mut res: Response = Response::new().add_message(BankMsg::Send { to_address: option.owner.to_string(), amount: info.funds });
@@ -242,20 +236,20 @@ pub fn execute_create(
     let expires = Timestamp::from_seconds(expires_time);
     //validate the expires time
     if env.block.time > expires{
-        return Err(ContractError::OptionExpired { expired: expires});
+        return Err(ContractError::OptionExpired { expired: expires });
     }
     //save the state to Optionlist,Createor Option,Owner Option
     let new_data:Data = Data { creator: info.sender.clone(), owner: info.sender.clone(), collateral: info.funds, counter_offer: counter_offer, onsale: false, expires:expires ,price: Vec::new() };
     let mut state = CONFIG.load(deps.storage)?;
     //save the key id to the own and creator's list
     let key: u64 = state.total_options_num;
-    OPTION_LIST.save(deps.storage,state.total_options_num , &new_data);
-    CREATOR_LIST.save(deps.storage, (info.sender.clone(),key), &new_data);
-    OWNER_LIST.save(deps.storage,(info.sender.clone(),key), &new_data);
+    OPTION_LIST.save(deps.storage,state.total_options_num , &new_data)?;
+    CREATOR_LIST.save(deps.storage, (info.sender.clone(),key), &new_data)?;
+    OWNER_LIST.save(deps.storage,(info.sender.clone(),key), &new_data)?;
 
     //save the total_option+1
     state.total_options_num=key + 1;
-    CONFIG.save(deps.storage, &state);
+    CONFIG.save(deps.storage, &state)?;
     let res: Response =
         Response::new().add_attributes([("action", "create option"), ("id", &key.to_string())]);
     Ok(res)
@@ -281,16 +275,16 @@ pub fn execute_add_to_market(
     }
     //validate is the option expired
     if env.block.time > option.expires{
-        return Err(ContractError::OptionExpired { expired: option.expires});
+        return Err(ContractError::OptionExpired { expired: option.expires });
     }
     //set the option data to on sale and set price
     option.onsale = true;
     option.price = vec![(Coin::new(amount, denom))];
     //save the change 
-    OPTION_LIST.save(deps.storage, id, &option);
-    OWNER_LIST.save(deps.storage, (option.owner.clone(),id), &option);
-    CREATOR_LIST.save(deps.storage, (option.creator.clone(),id), &option);
-    MARKET_LIST.save(deps.storage,id , &option);
+    OPTION_LIST.save(deps.storage, id, &option)?;
+    OWNER_LIST.save(deps.storage, (option.owner.clone(),id), &option)?;
+    CREATOR_LIST.save(deps.storage, (option.creator.clone(),id), &option)?;
+    MARKET_LIST.save(deps.storage,id , &option)?;
     let res: Response =
     Response::new().add_attributes([("action", "add to market"), ("id", &id.to_string()), ("price",&amount.to_string())]);
     Ok(res)
@@ -352,6 +346,7 @@ pub fn execute_remove_from_market(
 }
 
 #[entry_point]
+#[allow(dead_code)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::Config {} => to_binary(&query_config(deps)?),
@@ -417,7 +412,7 @@ fn query_creator_options(deps: Deps,addr: String)->StdResult<OptionsResponse>{
 mod tests {
     use super::*;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{attr, coins, CosmosMsg};
+    use cosmwasm_std::{coins};
     #[test]
     fn proper_initialization(){
         let mut deps = mock_dependencies();

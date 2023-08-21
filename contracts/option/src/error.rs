@@ -1,7 +1,8 @@
 use cosmwasm_std::{Coin, StdError, Timestamp};
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Error,Debug)]
+#[allow(dead_code)]
 pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),

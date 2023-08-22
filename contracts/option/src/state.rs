@@ -24,13 +24,13 @@ pub const CONFIG_KEY: &str = "config";
 pub const OPTION_LIST_KEY: &str = "option_list";
 pub const OWN_OPTIONS_KEY: &str = "own_options";
 pub const CREATE_OPTIONS_KEY: &str = "create_options";
-
+pub const MARKET_LIST_KEY: &str = "market_options";
 
 
 pub const OPTION_LIST: Map<u64, Data> = Map::new(OPTION_LIST_KEY);
 pub const CREATOR_LIST: Map<(Addr, u64),Data> = Map::new(CREATE_OPTIONS_KEY);
 pub const OWNER_LIST: Map<(Addr, u64),Data> = Map::new(OWN_OPTIONS_KEY);
-pub const MARKET_LIST: Map<u64,Data> = Map::new(OPTION_LIST_KEY);
+pub const MARKET_LIST: Map<u64,Data> = Map::new(MARKET_LIST_KEY);
 
 
 pub const CONFIG: Item<State> = Item::new(CONFIG_KEY);

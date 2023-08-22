@@ -209,7 +209,7 @@ pub fn execute_claim(
         Ok(option)=> option,
         Err(error) => return Err(ContractError::Std(error)),
     };
-    if option.expires<env.block.time{
+    if option.expires > env.block.time{
         return Err(ContractError::OptionNotExpired { expires: option.expires });
     }
     let mut res = Response::new();
@@ -226,7 +226,7 @@ pub fn execute_claim(
 }
 
 
-pub fn execute_create(
+pub fn  execute_create(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
@@ -412,11 +412,11 @@ fn query_creator_options(deps: Deps,addr: String)->StdResult<OptionsResponse>{
 mod tests {
     use super::*;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coins};
+    use cosmwasm_std::{coins,Addr,Timestamp,CosmosMsg};
+    use std::time::{SystemTime, UNIX_EPOCH};    
     #[test]
-    fn proper_initialization(){
+    fn initialization(){
         let mut deps = mock_dependencies();
-
         let msg: InstantiateMsg = InstantiateMsg {};
         let info = mock_info("creator", &coins(0, ""));
         let res = instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
@@ -424,5 +424,190 @@ mod tests {
         let res = query_config(deps.as_ref()).unwrap();
         assert_eq!("creator", res.creator.as_str());
         assert_eq!(0,res.total_options_num);
+        execute(deps.as_mut(), mock_env(), mock_info("creator-1",
+             &coins(100, "ETH")), ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("creator-2",
+             &coins(100, "ETH")), ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+
+        let res = query_config(deps.as_ref()).unwrap();
+        assert_eq!(2,res.total_options_num);
     }
+    #[test]
+    fn create_and_query_options(){
+        let mut deps = mock_dependencies();
+        let msg: InstantiateMsg = InstantiateMsg {};
+        instantiate(deps.as_mut(), mock_env(), mock_info("creator", &coins(0, "")), msg).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("creator-1",
+             &coins(100, "ETH")), ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("creator-2",
+             &coins(100, "ETH")), ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+
+        let res = query_options(deps.as_ref()).unwrap();
+        let aim_data = vec![(0,Data{creator:Addr::unchecked("creator-1".to_string()),owner:Addr::unchecked("creator-1".to_string()),collateral:coins(100, "ETH"),
+                                                 counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)}),
+                                              (1,Data{creator:Addr::unchecked("creator-2".to_string()),owner:Addr::unchecked("creator-2".to_string()),collateral:coins(100, "ETH"), 
+                                                 counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)})];
+        assert_eq!(aim_data,res);
+        let wrong_data = vec![(0,Data{creator:Addr::unchecked("creator-1".to_string()),owner:Addr::unchecked("creator-1".to_string()),collateral:coins(100, "ETH"), 
+                                                    counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)}),
+                                                (1,Data{creator:Addr::unchecked("creator-1".to_string()),owner:Addr::unchecked("creator-1".to_string()),collateral:coins(90, "ETH"), 
+                                                    counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)})];
+        assert_ne!(wrong_data,res)
+    }
+    #[test]
+    fn transfer() -> Result<(), String>{
+        let mut deps = mock_dependencies();
+        let msg: InstantiateMsg = InstantiateMsg {};
+        instantiate(deps.as_mut(), mock_env(), mock_info("creator", &coins(0, "")), msg).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("creator-1",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        let res = query_options(deps.as_ref()).unwrap();
+        let aim_data = vec![(0,Data{creator:Addr::unchecked("creator-1".to_string()),owner:Addr::unchecked("creator-1".to_string()),
+                collateral:coins(100, "ETH"), counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)})];
+        assert_eq!(aim_data,res);
+        execute(deps.as_mut(), mock_env(), mock_info("creator-1",&coins(100, "ETH")), ExecuteMsg::Transfer { id: 0, to: "creator-2".to_string()}).unwrap();
+        let res = query_options(deps.as_ref()).unwrap();
+        let aim_data = vec![(0,Data{creator:Addr::unchecked("creator-1".to_string()),owner:Addr::unchecked("creator-2".to_string()),
+            collateral:coins(100, "ETH"), counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)})];
+        assert_eq!(aim_data,res);
+        let res = execute(deps.as_mut(), mock_env(), mock_info("creator-1",&coins(100, "ETH")), ExecuteMsg::Transfer { id: 0, to: "creator-2".to_string()});
+        match res{
+            Ok(_)=> return Err("validate the auth wrong".to_string()),
+            Err(error) => |error: ContractError|->Result<(), String>{
+                match error {
+                    ContractError::Unauthorized {}=>Ok(()),
+                    _ => Err("wrong error type".to_string())
+                }
+            }(error)
+        }
+    }
+
+    #[test]
+    fn market_action()->Result<(),String>{
+        let mut deps = mock_dependencies();
+        let msg: InstantiateMsg = InstantiateMsg {};
+        instantiate(deps.as_mut(), mock_env(), mock_info("creator", &coins(0, "")), msg).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("bob",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        //test add to market
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::AddToMarket { id: 0, amount: 100, denom: "usdc".to_string() }).unwrap();        
+        let res = query_market_options(deps.as_ref()).unwrap();
+        let res_fr_options = query_option_by_id(deps.as_ref(), 0).unwrap();
+        let aim_data = vec![(0,Data{creator:Addr::unchecked("alice".to_string()),owner:Addr::unchecked("alice".to_string()),
+            collateral:coins(100, "ETH"), counter_offer:coins(100, "BTC"),onsale:true,price:coins(100, "usdc"),expires:Timestamp::from_seconds(11692624898)})];
+        assert_eq!(aim_data,res);
+        assert_eq!(aim_data[0].1,res_fr_options);
+        let res = execute(deps.as_mut(), mock_env(), mock_info("bob",&coins(100, "ETH")), 
+            ExecuteMsg::AddToMarket { id: 0, amount: 100, denom: "usdc".to_string() });        
+
+        match res{
+            Ok(_)=> return Err("validate the auth wrong".to_string()),
+            Err(error) => {
+                if let ContractError::Unauthorized{} = error {}else {
+                   return Err("wrong error type".to_string())
+                }
+            }
+        }
+     
+        //test remove
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::RemoveFromMarket { id: 0 }).unwrap();        
+        let res = query_market_options(deps.as_ref()).unwrap();
+        let empty_vec: Vec<(u64,Data)> = Vec::new();
+        assert_eq!(res,empty_vec);
+
+        //test buy anad update price
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::AddToMarket { id: 0, amount: 100, denom: "usdc".to_string() }).unwrap(); 
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(0, "")),  ExecuteMsg::UpdatePrice { id: 0, price: coins(120,"usdc") }).unwrap(); 
+        let res = query_option_by_id(deps.as_ref(), 0).unwrap();
+        let aim_data = Data{creator:Addr::unchecked("alice".to_string()),owner:Addr::unchecked("alice".to_string()),
+            collateral:coins(100, "ETH"), counter_offer:coins(100, "BTC"),onsale:true,price:coins(120,"usdc"),expires:Timestamp::from_seconds(11692624898)};
+        assert_eq!(res,aim_data);
+
+        execute(deps.as_mut(), mock_env(), mock_info("bob",&coins(120, "usdc")), ExecuteMsg::Buy { id: 0 }).unwrap();
+        let res = query_option_by_id(deps.as_ref(), 0).unwrap();
+        let aim_data = Data{creator:Addr::unchecked("alice".to_string()),owner:Addr::unchecked("bob".to_string()),
+            collateral:coins(100, "ETH"), counter_offer:coins(100, "BTC"),onsale:false,price:Vec::new(),expires:Timestamp::from_seconds(11692624898)};
+        assert_eq!(res,aim_data);
+
+        //test 
+        Ok(())   
+    }
+
+    #[test]
+    fn burn(){
+        let mut deps = mock_dependencies();
+        let msg: InstantiateMsg = InstantiateMsg {};
+        instantiate(deps.as_mut(), mock_env(), mock_info("creator", &coins(0, "")), msg).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("bob",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+
+        // expired returns funds
+        let mut env = mock_env();
+        env.block.height = 200_000;
+        let res = execute_burn(deps.as_mut(), mock_info("alice", &coins(0, "")),0).unwrap();
+        assert_eq!(res.messages.len(), 1);
+        assert_eq!(
+            res.messages[0].msg,
+            CosmosMsg::Bank(BankMsg::Send {
+                to_address: "alice".into(),
+                amount: coins(100, "ETH"),
+            })
+        );
+
+        // check deleted
+        let _ = query_option_by_id(deps.as_ref(),0).unwrap_err();
+    }
+
+    #[test]
+    fn execute_option(){
+        let mut deps = mock_dependencies();
+        let msg: InstantiateMsg = InstantiateMsg {};
+        instantiate(deps.as_mut(), mock_env(), mock_info("creator", &coins(0, "")), msg).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: 11692624898 }).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("alice", &coins(0, "")), ExecuteMsg::Transfer { id: 0, to: "bob".to_string() }).unwrap();
+        let res = execute(deps.as_mut(), mock_env(), mock_info("bob", &coins(100, "BTC")), ExecuteMsg::Execute { id: 0 }).unwrap();
+        assert_eq!(res.messages.len(), 2);
+        assert_eq!(
+            res.messages[0].msg,
+            CosmosMsg::Bank(BankMsg::Send {
+                to_address: "alice".into(),
+                amount: coins(100, "BTC"),
+            })
+        );
+        assert_eq!(
+            res.messages[1].msg,
+            CosmosMsg::Bank(BankMsg::Send {
+                to_address: "bob".into(),
+                amount: coins(100, "ETH"),
+            })
+        );
+    }
+    #[test]
+    fn cliam(){
+        let mut deps = mock_dependencies();
+        let msg: InstantiateMsg = InstantiateMsg {};
+        instantiate(deps.as_mut(), mock_env(), mock_info("creator", &coins(0, "")), msg).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(100, "ETH")), 
+            ExecuteMsg::Create { counter_offer: coins(100, "BTC"), time_stamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()+2 }).unwrap();
+        execute(deps.as_mut(), mock_env(), mock_info("alice",&coins(0,"")), ExecuteMsg::Claim { id: 0 }).unwrap_err();
+        let mut now_env = mock_env();
+        now_env.block.time = Timestamp::from_seconds(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()+5);
+        let res = execute(deps.as_mut(), now_env, mock_info("alice",&coins(0,"")), ExecuteMsg::Claim { id: 0 }).unwrap();
+        assert_eq!(res.messages.len(), 1);
+        assert_eq!(
+            res.messages[0].msg,
+            CosmosMsg::Bank(BankMsg::Send {
+                to_address: "alice".into(),
+                amount: coins(100, "ETH"),
+            })
+        );
+    } 
 }

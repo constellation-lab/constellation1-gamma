@@ -42,10 +42,9 @@ import {
 import { CgArrowsExchangeV } from 'react-icons/cg';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { RiSearch2Fill, RiSettings4Fill } from 'react-icons/ri';
-import { useChain } from '@cosmos-kit/react';
+import { useChain} from '@cosmos-kit/react';
 import { chainName } from '../config';
 import { type } from 'os';
-
 interface dataType extends OptionBase {
   label: string;
   value: string;
@@ -58,46 +57,18 @@ interface dataType extends OptionBase {
   };
 }
 
-const RadioTag = (props: any) => {
-  const { getInputProps, getCheckboxProps } = useRadio(props);
-  const input = getInputProps();
-  const checkbox = getCheckboxProps();
 
-  return (
-    <Box as="label">
-      <input {...input} />
-      <Box
-        {...checkbox}
-        cursor="pointer"
-        bg={useColorModeValue('blackAlpha.300', 'whiteAlpha.300')}
-        borderRadius="full"
-        _checked={{
-          bg: 'primary.500',
-          color: 'white'
-        }}
-        _focus={{
-          boxShadow: 'outline'
-        }}
-        _disabled={{
-          cursor: 'not-allowed',
-          opacity: 0.5
-        }}
-        px={5}
-        py={1}
-      >
-        <Text textAlign="center">{props.children}</Text>
-      </Box>
-    </Box>
-  );
-};
-
-const Setting = () => {
+const Setting = ({
+  setDuration
+}: {
+  setDuration: (value: number) => void;
+}) => {
   const { onToggle, onClose, isOpen } = useDisclosure();
   const initialFocusRef = useRef(null);
-  const options = ['1%', '3%', '5%', '2.5%'];
+  const options = [1, 15, 30, 60];
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'setting',
-    defaultValue: '1%',
+    defaultValue: '30day',
     onChange: console.log
   });
   const group = getRootProps();
@@ -167,16 +138,7 @@ const Setting = () => {
       >
         <PopoverBody p={{ base: 6, sm: 8 }}>
           <Text fontWeight="semibold" mb={1.5}>
-            Transaction Setting
-          </Text>
-          <Text
-            fontWeight="semibold"
-            color={useColorModeValue('blackAlpha.500', 'whiteAlpha.600')}
-            verticalAlign="middle"
-            mb={4}
-          >
-            Slippage tolerance&ensp;
-            <Icon as={BsExclamationCircleFill} color="orange.200" />
+            duration Setting
           </Text>
           <Grid
             templateColumns={{ base: '1fr 1fr', sm: 'repeat(4, 1fr)' }}
@@ -186,14 +148,7 @@ const Setting = () => {
             {options.map((value) => {
               const radio = getRadioProps({ value });
               return (
-                <RadioTag
-                  key={value}
-                  value={value}
-                  isDisabled={value === '2.5%' ? true : false}
-                  {...radio}
-                >
-                  {value}
-                </RadioTag>
+                <Button colorScheme='blue' key={value} onClick={()=>{setDuration(1000*60*60*24*value);}}>{value}days</Button>
               );
             })}
           </Grid>
@@ -390,14 +345,6 @@ const FromToken = ({
               </Text>
             </Box>
           </Flex>
-          <Text
-            fontSize={{ base: 'md', sm: 'xl' }}
-            fontWeight="semibold"
-            textAlign="end"
-            wordBreak="break-word"
-          >
-            3.141595
-          </Text>
         </Flex>
       </chakraComponents.Option>
     );
@@ -415,47 +362,6 @@ const FromToken = ({
       </chakraComponents.Control>
     );
   };
-  const AvailableCheckbox = ({
-    label,
-    id,
-    lightBg,
-    darkBg,
-    index
-  }: {
-    label: string;
-    id: string;
-    lightBg: string;
-    darkBg: string;
-    index: number;
-  }) => {
-    return (
-      <Button
-        id={id}
-        variant="unstyled"
-        fontSize="xs"
-        bg={useColorModeValue(lightBg, darkBg)}
-        color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
-        borderRadius="md"
-        fontWeight="semibold"
-        onClick={(e) => {
-          if (e.currentTarget.id === id) {
-            setChecked((pre) => {
-              const newArr = pre.map((v, i) => {
-                if (i === index) return !v;
-                return false;
-              });
-              return newArr;
-            });
-          }
-        }}
-        h={7}
-        w={12}
-      >
-        {label}
-      </Button>
-    );
-  };
-
   useEffect(() => {
     setCheckedItems((pre) => {
       const newItems = pre.map(({ lightBg, darkBg, ...rest }, i) => ({
@@ -474,7 +380,7 @@ const FromToken = ({
     }).catch((error)=>{
       console.log(error)
     })
-  }, [checked]);
+  });
   useOutsideClick({
     ref: fromMenuRef,
     handler: () => onClose()
@@ -515,16 +421,6 @@ const FromToken = ({
           >
             {(collateral/1000000).toFixed(2)}
           </Text>
-          {checkedItems.map(({ label, id, lightBg, darkBg }, index) => (
-            <AvailableCheckbox
-              label={label}
-              id={id}
-              lightBg={lightBg}
-              darkBg={darkBg}
-              index={index}
-              key = {index}
-            />
-          ))}
         </Flex>
       </Flex>
       <Flex align="center" maxW="full" h="fit-content">
@@ -583,7 +479,6 @@ const FromToken = ({
             </Flex>
           )}
         </Button>
-        {fromItem ? (
           <Box flex={1}>
             <Editable
               variant="unstyled"
@@ -599,25 +494,23 @@ const FromToken = ({
                 min="0"
                 defaultValue="0"
                 onChange={(e) => {
+                  const value = e.target.value;
+                  const floatRegex =
+                    /(0{0,1}[.]d*)(d+([.]d*)?(e[+-]?d+)?|[.]d+(e[+-]?d+)?)/g;
+                  const floatCheck = value.match(floatRegex);
+                  if (floatCheck !== null) {
+                    setTokenInputValue(Number(value));
+                    return value;
+                  }
+
+                  setTokenInputValue(parseFloat(value));
+                  return (e.target.value = parseFloat(value).toString());
                 }}
                 _focus={{ boxShadow: 'none' }}
               />
             </Editable>
-            <Text
-              fontSize={{ sm: 'xl' }}
-              textAlign="end"
-              fontWeight="bold"
-              mb={0}
-            >
-              ≈$0
-            </Text>
           </Box>
-        ) : (
-          <Flex flexDirection="column" align="end">
-            <Skeleton w={{ base: 20, sm: 36 }} h={{ base: 8, sm: 10 }} mb={2} />
-            <Skeleton w={{ base: 12, sm: 16 }} h={{ base: 6, sm: 8 }} />
-          </Flex>
-        )}
+       
       </Flex>
       <Box
         position="absolute"
@@ -723,11 +616,13 @@ const FromToken = ({
 const ToToken = ({
   data,
   toItem,
-  setToItem
+  setToItem,
+  setTovalue
 }: {
   data: dataType[];
   toItem: dataType | undefined;
   setToItem: (value: dataType) => void;
+  setTovalue:(value: number)=>void;
 }) => {
   const toMenuRef = useRef<HTMLDivElement | null>(null);
   const { isOpen, onToggle, onClose } = useDisclosure();
@@ -840,14 +735,6 @@ const ToToken = ({
               </Text>
             </Box>
           </Flex>
-          <Text
-            fontSize={{ base: 'md', sm: 'xl' }}
-            fontWeight="semibold"
-            textAlign="end"
-            wordBreak="break-word"
-          >
-            3.141595
-          </Text>
         </Flex>
       </chakraComponents.Option>
     );
@@ -880,9 +767,17 @@ const ToToken = ({
       borderRadius="xl"
       p={6}
     >
-      <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold" mb={4}>
-        To
-      </Text>
+      <Flex
+        position="relative"
+        justify="space-between"
+        flexDirection={{ base: 'column', sm: 'row' }}
+        align={{ base: 'start', sm: 'center' }}
+        mb={4}
+      >
+        <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
+        count offer
+        </Text>
+      </Flex>
       <Flex align="center" maxW="full" h="fit-content">
         <Button
           flex={1}
@@ -939,37 +834,38 @@ const ToToken = ({
             </Flex>
           )}
         </Button>
-        {toItem ? (
-          <Flex
-            maxW={{ base: 28, sm: 48, md: 'initial' }}
-            wrap="wrap"
-            justify="end"
-          >
-            <Text
-              fontSize={{ base: 'lg', sm: '2xl', md: '3xl' }}
+        <Box flex={1}>
+            <Editable
+              variant="unstyled"
+              fontSize={{ base: 'lg', sm: '2xl' }}
               fontWeight="bold"
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              color={useColorModeValue('blackAlpha.800', 'whiteAlpha.800')}
               textAlign="end"
-              wordBreak="break-word"
               mb={{ base: 1, sm: 2 }}
-              mr={{ base: 0, md: 2 }}
+              placeholder="0"
             >
-              ≈&nbsp;3.265358
-            </Text>
-            <Text
-              fontSize={{ base: 'lg', sm: '2xl', md: '3xl' }}
-              fontWeight="bold"
-              textAlign="end"
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              color={useColorModeValue('blackAlpha.800', 'whiteAlpha.800')}
-            >
-              {toItem.label}
-            </Text>
-          </Flex>
-        ) : (
-          <Skeleton w={{ base: 20, sm: 36 }} h={{ base: 8, sm: 10 }} />
-        )}
+              <EditablePreview />
+              <EditableInput
+                type="number"
+                min="0"
+                defaultValue="0"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const floatRegex =
+                    /(0{0,1}[.]d*)(d+([.]d*)?(e[+-]?d+)?|[.]d+(e[+-]?d+)?)/g;
+                  const floatCheck = value.match(floatRegex);
+                  if (floatCheck !== null) {
+                    setTovalue(Number(value));
+                    return value;
+                  }
+
+                  setTovalue(parseFloat(value));
+                  return (e.target.value = parseFloat(value).toString());
+                }}
+                _focus={{ boxShadow: 'none' }}
+              />
+            </Editable>
+          </Box>
+
       </Flex>
       <Box
         position="absolute"
@@ -1030,11 +926,16 @@ const ToToken = ({
 const Rate = ({
   fromItem,
   toItem,
-  tokenInputValue
+  tokenInputValue,
+  tokenTovalue,
+  date,
 }: {
   fromItem: dataType | undefined;
   toItem: dataType | undefined;
   tokenInputValue: number;
+  tokenTovalue: number;
+  date: number;
+
 }) => {
   return (
     <Box
@@ -1063,60 +964,50 @@ const Rate = ({
             justify="end"
           >
             <Text>
-              {tokenInputValue}&ensp;{fromItem.label}
+              1&ensp;{fromItem.label}
             </Text>
             <Text>=</Text>
-            <Text>3.265358&ensp;{toItem.label}</Text>
+            <Text>{tokenTovalue/tokenInputValue}&ensp;{toItem.label}</Text>
           </Stack>
         ) : (
           <Skeleton w={{ base: 32, sm: 48 }} h={{ base: 6, sm: 8 }} />
         )}
-      </Flex>
-      <Flex justify="end" mb={4}>
-        {fromItem && toItem ? (
-          <Stack
-            as="span"
-            isInline
-            wrap="wrap"
-            fontSize={{ base: 'sm', md: 'md' }}
-            fontWeight="bold"
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            color={useColorModeValue('blackAlpha.600', 'whiteAlpha.600')}
-            maxW={{ base: 56, sm: 'initial' }}
-            justify="end"
-          >
-            <Text>3.265358&ensp;{toItem.label}</Text>
-            <Text>=</Text>
-            <Text>
-              {tokenInputValue}&ensp;{fromItem.label}
-            </Text>
-          </Stack>
-        ) : (
-          <Skeleton w={{ base: 28, sm: 40 }} h={{ base: 4, sm: 6 }} />
-        )}
+
       </Flex>
       <Flex
         justify="space-between"
+        align="start"
         fontWeight="bold"
         fontSize={{ md: 'lg' }}
         color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
+        mb={1}
       >
-        <Text>Swap Fee</Text>
-        <Text>0.3%</Text>
+        <Text> collateral: </Text>
+        <Text>{tokenInputValue}{fromItem.label}</Text>
       </Flex>
-      <Divider
-        borderColor={useColorModeValue('blackAlpha.400', 'whiteAlpha.600')}
-        my={{ base: 4, md: 6 }}
-      />
       <Flex
         justify="space-between"
+        align="start"
         fontWeight="bold"
         fontSize={{ md: 'lg' }}
-        color={useColorModeValue('blackAlpha.800', 'whiteAlpha.900')}
+        color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
+        mb={1}
       >
-        <Text>Estimated Slippage</Text>
-        <Text>&lt;&nbsp;0.001%</Text>
+        <Text> count offer: </Text>
+        <Text>{tokenTovalue}{toItem.label}</Text>
       </Flex>
+      <Flex
+        justify="space-between"
+        align="start"
+        fontWeight="bold"
+        fontSize={{ md: 'lg' }}
+        color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
+        mb={1}
+      >
+        <Text> expiration date: </Text>
+        <Text>{(new Date(Date.now()+date)).toDateString()}</Text>
+      </Flex>
+
     </Box>
   );
 };
@@ -1147,7 +1038,8 @@ export const CreateOption = () => {
   });
   const [loading, setLoading] = useState(true);
   const [tokenInputValue, setTokenInputValue] = useState(0);
-
+  const [tokenCountofferValue, setTokenCountofferValue] = useState(0);
+  const [duration,setDuration]= useState<number>(1000*60*60*24*7);
   setTimeout(() => {
     setLoading(false);
   }, 2000);
@@ -1174,7 +1066,7 @@ export const CreateOption = () => {
   return (
     <Stack spacing={6} w="full" p={{ base: 4, sm: 6 }}>
       <Box zIndex={3000} alignSelf="end">
-        <Setting />
+        <Setting setDuration = {setDuration}/>
       </Box>
       <FromToken
         data={data}
@@ -1185,11 +1077,13 @@ export const CreateOption = () => {
         setToItem={setToItem}
         setTokenInputValue={setTokenInputValue}
       />
-      <ToToken data={data} toItem={toItem} setToItem={setToItem} />
+      <ToToken data={data} toItem={toItem} setToItem={setToItem} setTovalue = {setTokenCountofferValue}/>
       <Rate
         fromItem={fromItem}
         toItem={toItem}
         tokenInputValue={tokenInputValue}
+        tokenTovalue={tokenCountofferValue}
+        date={duration}
       />
       <Button h={{ base: 12, md: 16 }} w="full" colorScheme="primary">
         create option

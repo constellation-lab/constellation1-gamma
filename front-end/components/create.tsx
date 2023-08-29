@@ -14,6 +14,10 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  PopoverCloseButton,
+  PopoverArrow,
+  PopoverFooter,
+  PopoverHeader,
   Skeleton,
   Stack,
   SystemStyleObject,
@@ -43,8 +47,11 @@ import { CgArrowsExchangeV } from 'react-icons/cg';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { RiSearch2Fill, RiSettings4Fill } from 'react-icons/ri';
 import { useChain} from '@cosmos-kit/react';
-import { chainName } from '../config';
-import { type } from 'os';
+import { chainName,contractAddress } from '../config';
+import {ExecuteMsg} from '../config/constellation';
+import {useTx}from '../hook';
+import { Coin } from '@cosmjs/amino';
+
 interface dataType extends OptionBase {
   label: string;
   value: string;
@@ -215,21 +222,6 @@ const FromToken = ({
   tokenInputValue: number;
   setTokenInputValue: (value: number) => void;
 }) => {
-  const [checked, setChecked] = useState([false, false]);
-  const [checkedItems, setCheckedItems] = useState([
-    {
-      label: 'MAX',
-      id: 'max',
-      lightBg: 'blackAlpha.300',
-      darkBg: 'whiteAlpha.300'
-    },
-    {
-      label: 'HALF',
-      id: 'half',
-      lightBg: 'blackAlpha.300',
-      darkBg: 'whiteAlpha.300'
-    }
-  ]);
   const [collateral, setCollateral] = useState<number>();
   const fromMenuRef = useRef<HTMLDivElement | null>(null);
   const { isOpen, onToggle, onClose } = useDisclosure();
@@ -363,14 +355,6 @@ const FromToken = ({
     );
   };
   useEffect(() => {
-    setCheckedItems((pre) => {
-      const newItems = pre.map(({ lightBg, darkBg, ...rest }, i) => ({
-        ...rest,
-        lightBg: checked[i] ? 'primary.300' : 'blackAlpha.300',
-        darkBg: checked[i] ? 'primary.800' : 'whiteAlpha.300'
-      }));
-      return newItems;
-    });
     getStargateClient().then((client)=>{
         client.getBalance(address,fromItem.denom).then((coin)=>{
         setCollateral(Number(coin.amount))
@@ -565,50 +549,6 @@ const FromToken = ({
           </Box>
         </Collapse>
       </Box>
-      {!isOpen && (
-        <Flex justify="center" align="center" boxShadow="base">
-          <Box
-            as="button"
-            position="absolute"
-            zIndex={5}
-            bottom={{ base: -8, sm: -10 }}
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            color={useColorModeValue('blackAlpha.300', 'whiteAlpha.600')}
-            onClick={() => {
-              setFromItem(toItem as dataType);
-              setToItem(fromItem as dataType);
-            }}
-          >
-            <Icon
-              zIndex={-10}
-              as={BsHexagonFill}
-              w={{ base: 12, sm: 16 }}
-              h={{ base: 12, sm: 16 }}
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              color={useColorModeValue('gray.100', 'gray.700')}
-            />
-            <Icon
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              zIndex={10}
-              as={BsHexagon}
-              w={{ base: 12, sm: 16 }}
-              h={{ base: 12, sm: 16 }}
-            />
-            <Icon
-              position="absolute"
-              top={2}
-              left={2}
-              right={2}
-              w={{ base: 8, sm: 12 }}
-              h={{ base: 8, sm: 12 }}
-              as={CgArrowsExchangeV}
-            />
-          </Box>
-        </Flex>
-      )}
     </Box>
   );
 };
@@ -1012,6 +952,97 @@ const Rate = ({
   );
 };
 
+const CreateButton =  ({
+    fromItem,
+    toItem,
+    tokenInputValue,
+    tokenTovalue,
+    date,
+  }: {
+    fromItem: dataType | undefined;
+    toItem: dataType | undefined;
+    tokenInputValue: number;
+    tokenTovalue: number;
+    date: number;
+  
+  })=>{
+    const initialFocusRef = React.useRef()
+    const {tx} = useTx(chainName,"unibi",contractAddress)
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const handleCreateOption = async () => {
+      setIsSubmitting(true)
+      let msg:ExecuteMsg = {create:{
+        counter_offer:[{amount:(tokenTovalue*1000000).toString(), denom: toItem.denom}],
+        time_stamp: Math.floor((Date.now()+date)/1000)
+      }}
+      console.log(msg)
+      let funds:Coin[]=[{amount:(tokenInputValue*1000000).toString(), denom: fromItem.denom}];
+      await tx(msg,funds,{});
+      setIsSubmitting(false)
+    }
+    return (
+          <Popover
+            initialFocusRef={initialFocusRef}
+            placement='bottom'
+            closeOnBlur={false}
+          >
+            <PopoverTrigger>
+              <Button isLoading={isSubmitting} h={{ base: 12, md: 16 }} w="full" colorScheme="primary">Create Option</Button>
+            </PopoverTrigger>
+            <PopoverContent color='white' bg='blue.800' borderColor='blue.800' >
+              <PopoverHeader pt={4} fontWeight='bold' border='10' >
+                Confirm your option
+              </PopoverHeader>
+              <PopoverArrow bg='blue.800' />
+              <PopoverCloseButton />
+              <PopoverBody>
+              <Flex
+                  justify="space-between"
+                  align="start"
+                  fontWeight="bold"
+                  fontSize={{ md: 'lg' }}
+                  color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
+                  mb={1}>
+                  <Text> collateral: </Text>
+                  <Text>{tokenInputValue}{fromItem.label}</Text>
+              </Flex>
+              <Flex
+                  justify="space-between"
+                  align="start"
+                  fontWeight="bold"
+                  fontSize={{ md: 'lg' }}
+                  color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
+                  mb={1}>
+                <Text> count offer: </Text>
+                <Text>{tokenTovalue}{toItem.label}</Text>
+              </Flex>
+              <Flex
+                justify="space-between"
+                align="start"
+                fontWeight="bold"
+                fontSize={{ md: 'lg' }}
+                color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
+                mb={1}>
+                <Text> expiration date: </Text>
+                <Text>{(new Date(Date.now()+date)).toDateString()}</Text>
+              </Flex>
+
+              </PopoverBody>
+              <PopoverFooter
+                border='0'
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
+                pb={4}
+              >
+                  <Button colorScheme='blue' ref={initialFocusRef} onClick={handleCreateOption} >
+                    Confirm
+                  </Button>
+              </PopoverFooter>
+            </PopoverContent>
+          </Popover>
+    )
+  }
 export const CreateOption = () => {
   const [data, setData] = useState<dataType[]>([{
     label: "NIBI",
@@ -1085,9 +1116,11 @@ export const CreateOption = () => {
         tokenTovalue={tokenCountofferValue}
         date={duration}
       />
-      <Button h={{ base: 12, md: 16 }} w="full" colorScheme="primary">
-        create option
-      </Button>
+      <CreateButton fromItem={fromItem}
+        toItem={toItem}
+        tokenInputValue={tokenInputValue}
+        tokenTovalue={tokenCountofferValue}
+        date={duration}/>
     </Stack>
   );
 };

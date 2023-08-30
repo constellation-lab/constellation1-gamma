@@ -16,7 +16,8 @@ If the expiration time is reached, anyone (typically the creator) can claim the 
 The owner can also burn an unexpired option, which acts like a claim but is only callable by the owner.
 Various queries are supported to get option details (by ID), get all options, get options by owner/creator address, paginated options, among others.
 In summary, our code implements core options trading functionality like creation, buying, selling, exercising with expiration on the nibiru blockchain. There are big plans for constellation and a lot of work to be done however the portion of interest focused on so far is https://github.com/constellation-lab/constellation1-gamma/tree/main/contracts/option folder only, while we work towards completing all the below in future:
-
+### you can find the contract code in /contracts/option 
+you can run ```cargo wasm``` at /contracts/option to build the wasm code
 Root Folder
   - README.md
   - LICENSE
@@ -28,7 +29,7 @@ Root Folder
     - calliope.rs
     - keeper.rs
     - lib.rs
-    - option.rs
+    - option
     - price_oracle.rs
     - strike_oracle.rs
   - test

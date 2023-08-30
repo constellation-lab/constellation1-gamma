@@ -123,7 +123,7 @@ pub fn execute_transfer(
     }
     OPTION_LIST.save(deps.storage,id , &option)?;
     CREATOR_LIST.save(deps.storage, (info.sender.clone(),id), &option)?;
-    OWNER_LIST.save(deps.storage,(info.sender.clone(),id), &option)?;
+    OWNER_LIST.save(deps.storage,(option.owner.clone(),id), &option)?;
 
     // set new owner on state
     
@@ -184,7 +184,7 @@ pub fn execute_buy(
     //send the token buyer paid to the owner
     let mut res: Response = Response::new().add_message(BankMsg::Send { to_address: option.owner.to_string(), amount: info.funds });
     //update stoge
-    let old_owner = option.owner;
+    let old_owner = option.owner.clone();
     option.owner = info.sender.clone();
     option.price = Vec::new();
     option.onsale = false;
@@ -371,8 +371,9 @@ fn query_options(deps: Deps)->StdResult<OptionsResponse>{
     Ok(resp)
 }
 
-fn query_options_page(deps: Deps,key: u64,amount:usize)->StdResult<OptionsResponse>{
-    let options:StdResult<Vec<_>> =OPTION_LIST.range(deps.storage, Some(Bound::exclusive(key)), None, Order::Ascending).take(amount).collect();
+fn query_options_page(deps: Deps,key: u64,amount:u64)->StdResult<OptionsResponse>{
+    let limit = amount as usize;
+    let options:StdResult<Vec<_>> =OPTION_LIST.range(deps.storage, Some(Bound::exclusive(key)), None, Order::Ascending).take(limit).collect();
     let resp =options?;
     Ok(resp)
 }
@@ -389,8 +390,9 @@ fn query_market_options(deps: Deps)->StdResult<OptionsResponse>{
 
 }
 
-fn query_market_options_page(deps: Deps,key: u64,amount:usize)->StdResult<OptionsResponse>{
-    let options:StdResult<Vec<_>> =MARKET_LIST.range(deps.storage, Some(Bound::exclusive(key)), None, Order::Ascending).take(amount).collect();
+fn query_market_options_page(deps: Deps,key: u64,amount:u64)->StdResult<OptionsResponse>{
+    let limit = amount as usize;
+    let options:StdResult<Vec<_>> =MARKET_LIST.range(deps.storage, Some(Bound::exclusive(key)), None, Order::Ascending).take(limit).collect();
     let resp =options?;
     Ok(resp)
 }

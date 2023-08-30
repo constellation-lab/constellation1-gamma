@@ -19,7 +19,7 @@ import {
   TabPanels
 } from '@chakra-ui/react';
 import { BsFillMoonStarsFill, BsFillSunFill } from 'react-icons/bs';
-import { CreateOption, Dependency, WalletSection } from '../components';
+import { CreatedOptionsList, CreateOption, MarketOptionsList, OwnerOptionList, WalletSection } from '../components';
 export default function Home() {
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -55,11 +55,11 @@ export default function Home() {
         <Tab>Owned Option</Tab>
         <Tab>Created Option</Tab>
       </TabList>
-      <TabPanels p=''>
+      <TabPanels>
         <TabPanel><CreateOption /></TabPanel>
-        <TabPanel>Are 1, 2, 3</TabPanel>
-        <TabPanel>Red, yellow and blue.</TabPanel>
-        <TabPanel>Red, yellow and blue.</TabPanel>
+        <TabPanel><MarketOptionsList/></TabPanel>
+        <TabPanel><OwnerOptionList/></TabPanel>
+        <TabPanel><CreatedOptionsList/></TabPanel>
       </TabPanels>
     </Tabs>
     </Container>

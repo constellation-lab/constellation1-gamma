@@ -1,6 +1,7 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{Coin};
 use crate::state::{State,Data};
+use schemars::JsonSchema;
 
 #[cw_serde]
 pub struct InstantiateMsg {}
@@ -35,13 +36,13 @@ pub enum QueryMsg {
     #[returns(OptionsResponse)]
     Options{},
     #[returns(OptionsResponse)]
-    OptionsPage{key: u64,amount: usize},
+    OptionsPage{key: u64,amount: u64},
     #[returns(GetOptionByIdResponse)]
     GetOptionByid{id:u64},
     #[returns(OptionsResponse)]
     MarketOptions{},
     #[returns(OptionsResponse)]
-    MaketOptionsPagee{key: u64,amount: usize},
+    MaketOptionsPagee{key: u64,amount: u64},
     #[returns(OptionsResponse)]
     CreateorOptions{addr: String},
     #[returns(OptionsResponse)]

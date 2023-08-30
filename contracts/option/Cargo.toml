@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [features]
 # for more explicit tests, cargo test --features=backtraces
@@ -14,11 +14,13 @@ backtraces = ["cosmwasm-std/backtraces"]
 [dependencies]
 cosmwasm-std = { version = "1.1.0", features = ["staking"] }
 cw-storage-plus = "0.13.4"
-cosmwasm-schema = "1.1.0"
+cosmwasm-schema = "1.1.4"
 thiserror = "1.0.31"
+schemars = "0.8.1"
 
 [dev-dependencies]
 cw-multi-test = "0.13.4"
 
 [profile.release]
 debug = false
+

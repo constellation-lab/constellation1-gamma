@@ -1,10 +1,8 @@
-import { isDeliverTxSuccess, StdFee } from '@cosmjs/stargate';
+import { StdFee } from '@cosmjs/stargate';
 import { useToaster, ToastType, type CustomToast } from './useToaster';
 import { useChain } from '@cosmos-kit/react';
 import { ToastId } from '@chakra-ui/react';
-import {ExecuteMsg,QueryMsg,ConstellationClient} from "../config/constellation"
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
-import { coins } from '@cosmjs/amino';
+import {ExecuteMsg,ConstellationClient} from "../config/constellation"
 import { Coin } from '@cosmjs/amino';
 
 interface Msg {
@@ -25,7 +23,7 @@ export enum TxStatus {
 }
 
 export const useTx = (chainName: string,denom: string,contractAddress:string) => {
-  const { address, getSigningCosmWasmClient, estimateFee } =
+  const { address, getSigningCosmWasmClient } =
     useChain(chainName);
 
   const toaster = useToaster();
@@ -36,7 +34,7 @@ export const useTx = (chainName: string,denom: string,contractAddress:string) =>
     }
     return ans;
   }
-  const tx = async (msgs: ExecuteMsg, _funds: Coin[],options: TxOptions) => {
+  const tx = async (msgs: ExecuteMsg,options: TxOptions, _funds?: Coin[]) => {
     if (!address) {
       toaster.toast({
         type: ToastType.Error,

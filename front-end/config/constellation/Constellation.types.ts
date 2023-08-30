@@ -12,7 +12,7 @@ export type ExecuteMsg = {
   };
 } | {
   add_to_market: {
-    amount: number;
+    amount: string;
     denom: string;
     id: number;
   };

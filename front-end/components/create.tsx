@@ -977,15 +977,15 @@ const CreateButton =  ({
       }}
       console.log(msg)
       let funds:Coin[]=[{amount:(tokenInputValue*1000000).toString(), denom: fromItem.denom}];
-      await tx(msg,funds,{});
+      await tx(msg,{},funds);
       setIsSubmitting(false)
     }
     return (
           <Popover
             initialFocusRef={initialFocusRef}
             placement='bottom'
-            closeOnBlur={false}
-          >
+          >{({ isOpen, onClose }) => (
+            <>
             <PopoverTrigger>
               <Button isLoading={isSubmitting} h={{ base: 12, md: 16 }} w="full" colorScheme="primary">Create Option</Button>
             </PopoverTrigger>
@@ -1001,6 +1001,7 @@ const CreateButton =  ({
                   align="start"
                   fontWeight="bold"
                   fontSize={{ md: 'lg' }}
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
                   color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
                   mb={1}>
                   <Text> collateral: </Text>
@@ -1011,6 +1012,7 @@ const CreateButton =  ({
                   align="start"
                   fontWeight="bold"
                   fontSize={{ md: 'lg' }}
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
                   color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
                   mb={1}>
                 <Text> count offer: </Text>
@@ -1021,6 +1023,7 @@ const CreateButton =  ({
                 align="start"
                 fontWeight="bold"
                 fontSize={{ md: 'lg' }}
+                // eslint-disable-next-line react-hooks/rules-of-hooks
                 color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
                 mb={1}>
                 <Text> expiration date: </Text>
@@ -1035,11 +1038,14 @@ const CreateButton =  ({
                 justifyContent='center'
                 pb={4}
               >
-                  <Button colorScheme='blue' ref={initialFocusRef} onClick={handleCreateOption} >
+                  <Button colorScheme='blue' ref={initialFocusRef} onClick={()=>{onClose();handleCreateOption();}} >
                     Confirm
                   </Button>
               </PopoverFooter>
             </PopoverContent>
+                </>
+              )}
+    
           </Popover>
     )
   }

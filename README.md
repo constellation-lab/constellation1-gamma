@@ -37,8 +37,8 @@ Root Folder
     - integration_test.rs
     - unit_test.rs
   - deployment
-    - opyn_cosmwasm.yaml
-    - opyn_cosmwasm.toml
+    - constella_cosmwasm.yaml
+    - constella_cosmwasm.toml
   - vesting
     - vesting.md
   - docs

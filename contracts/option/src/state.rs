@@ -1,6 +1,5 @@
-use cosmwasm_schema::cw_serde;
-
 use cosmwasm_std::{Addr, Coin, Timestamp, Decimal, Uint128};
+use cosmwasm_schema::cw_serde;
 use cw_storage_plus::{Map,Item};
 use std::collections::HashMap;
 
@@ -174,31 +173,3 @@ pub const DISCOUNTS: Map<&Addr, DiscountCriteria> = Map::new("discounts");
 
 
 
-/*pub mod state {
-
-    pub use super::{Data, State};  
-    pub use super::{BidOrOfferResponse, Bid, Lock, DiscountCriteria, AmmPoolInfo, LockInfo, Integrate}; 
-    
-    //pub use super::ACCEPTANCE_STATUS;
-
-    // Export any other desired types
-    pub use super:: CONFIG_KEY;
-    pub use super:: OPTION_LIST_KEY;
-    pub use super:: OWN_OPTIONS_KEY;
-    pub use super:: CREATE_OPTIONS_KEY;
-    pub use super:: MARKET_LIST_KEY;
-
-
-    pub use super:: OPTION_LIST;
-    pub use super:: CREATOR_LIST;
-    pub use super:: OWNER_LIST;
-    pub use super:: MARKET_LIST;
-
-    pub use super:: CONFIG;
-
-    pub use super:: AMM_POOLS;
-    pub use super:: LOCKS;
-    pub use super:: DISCOUNTS;
-    
-
-  }*/

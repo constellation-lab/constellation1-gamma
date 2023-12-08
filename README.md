@@ -17,34 +17,12 @@ If the expiration time is reached, anyone (typically the creator) can claim the 
 The owner can also burn an unexpired option, which acts like a claim but is only callable by the owner.
 Various queries are supported to get option details (by ID), get all options, get options by owner/creator address, paginated options, among others.
 In summary, our code implements core options trading functionality like creation, buying, selling, exercising with expiration on the nibiru blockchain. 
-### you can find the contract code in /contracts/option 
+
 you can run ```cargo wasm``` at /contracts/option to build the wasm code
 Additional functionality in progress are as below:
 Bidding, offering, accepting bids/offers, withdrawing collateral (including early withdrawal), extending expiration, pausing/unpausing the contract, and emitting events for transparency.
 
 Other functionality being worked on/ added are time buffers before expiry:to prevent last minute sniping, Configurable buffer duration and Implementing partial withdrawals to Allow users to withdraw a % of their bid. Also, the use paginated returns for mappings where necessary and in addition the allowance of partial execution of an option by owner. The Addition an oracle for the latest price into the contract for market options. Allowing a fraction of an option to be traded, allowing various IBC tokens to be used as collateral, Allowing the owner to withdraw collateral early if not executed and Validating addresses where necessary.
-
-***Specific areas of Adjustments to be made to current cosmwasm version:***
-- For Partial Execution of an Option by Owner:
-  - Add a method, e.g., partial_execute, which allows the owner to execute a fraction of an option.
-  - Validate the owner, the option's status, and the fraction to be executed.
-  - Update the option's state, transfer assets, and emit relevant events.
-- For Oracle for Latest Price:
-  - Integrate an oracle into your contract to fetch the latest price.
-  - Update the execute_update_price method to use the oracle's latest price.
-- For Allowing a Fraction of an Option to be Traded:
-  - Modify the existing methods (e.g., execute_buy) to handle trading a fraction of an option.
-  - Update storage and state structures to accommodate fractional units.
-- For Allowinging Tokens as Collateral:
-  - Modify the execute_create method to accept any token as collateral, not just ATOM.
-  - Update the state structure to store collateral details.
-- For Adding Time Buffers before Expiry for Executions:
-  - In methods like execute_execute, check if the execution is within a specified time buffer before the option's expiry.
-  - Add a configurable time buffer for executions.
-- For Cancel Option Function:
-  - Implement a method, e.g., cancel_option, allowing the owner to cancel an option before expiry.
-  - Validate the owner and the option's status.
-  - Return collateral to the owner and update state.
 
 
 

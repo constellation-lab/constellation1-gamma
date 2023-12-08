@@ -1,7 +1,7 @@
 # constelllation1_options
 
 The Constellation GammaProtocol aka constellation is a decentralized options protocol that allows users to create arbitrary option listings. As the name implies constellation is meant to launch web3 derivatives across various blockchains and across various blockchain ecosystems in strive towards interoperability among them, hence a constellation of web3 derivative products that promote the adoption of web3 derivatives at all levels.
-This project implements an options trading contract code in rust configured for the nibiru chain and intends to build a complete options trading platform. Full details, description including maps and datastructures, the baseline demo app and a demo vidoe showing the use of the app can be found at this link: https://dorahacks.io/buidl/7215#details . There is also basic documentation on the app usage at https://app.gitbook.com/o/clGAVi5OLWOza6FgnAQq/s/ByGkTs5XC9ktsDLMFs7U/ and instructions for the app demo at https://docs.google.com/document/d/1FNbR0X8JjkzxmR6RACcf20Hko78IqNgNdmEeCiAVlGw/edit?usp=sharing . 
+This project implements an options trading contract code in rust configured for the nibiru chain and intends to build a complete options trading platform. . 
 
 We implemented an options trading smart contract for the nibiru blockchain. Our code allows creating new options, specifying a collateral amount, counter offer amount, expiration time, amongst others and we intend to develop complex strategies in future. However, at this point the options system we developed has the details below:
 Options are created by specifying collateral, a counter offer amount, and expiration time. The creator stakes assets into the option upon creation.

@@ -47,13 +47,11 @@ pub enum QueryMsg {
     #[returns(GetOptionByIdResponse)]
     GetOptionByid{id:u64},
     #[returns(OptionsResponse)]
-    MarketOptions{},
-    #[returns(OptionsResponse)]
-    MaketOptionsPagee{key: u64,amount: u64},
-    #[returns(OptionsResponse)]
     CreateorOptions{addr: String},
     #[returns(OptionsResponse)]
     OwnerOptions{addr: String},
+    #[returns(bool)]
+    GetIsApprove{spender:String,owner:String}
 
 }
 

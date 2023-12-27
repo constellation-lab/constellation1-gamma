@@ -38,7 +38,7 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Create{counter_offer,time_stamp} => execute_create(deps, env, info, counter_offer[0],time_stamp),
+        ExecuteMsg::Create{counter_offer,time_stamp} => execute_create(deps, env, info, counter_offer[0].clone(),time_stamp),
         ExecuteMsg::Burn { id }=> execute_burn(deps, info,id),
         ExecuteMsg::ClaimCollateral { id } => execute_claim(deps,env,id),
         ExecuteMsg::Transfer {id, to } => execute_transfer(deps, env, info,id, to),
@@ -56,7 +56,7 @@ pub fn execute_approve(
     spender: String,
 )-> Result<Response,ContractError>{
     let spender = deps.api.addr_validate(&spender)?;
-    APPROVE_LIST.save(deps.storage, (info.sender,spender), &true);
+    APPROVE_LIST.save(deps.storage, (info.sender.clone(),spender.clone()), &true)?;
     let res: Response =
         Response::new().add_attributes([("action", "approve"),("owner", &info.sender.to_string()), ("spender", spender.as_str())]);
     Ok(res)
@@ -69,7 +69,7 @@ pub fn execute_disapprove(
     spender: String,
 )-> Result<Response,ContractError>{
     let spender = deps.api.addr_validate(&spender)?;
-    APPROVE_LIST.save(deps.storage, (info.sender,spender), &false);
+    APPROVE_LIST.save(deps.storage, (info.sender.clone(),spender.clone()), &false)?;
     let res: Response =
         Response::new().add_attributes([("action", "approve"),("owner", &info.sender.to_string()), ("spender", spender.as_str())]);
     Ok(res)
@@ -87,7 +87,7 @@ pub fn execute_execute(
     };
     let state: State = CONFIG.load(deps.storage)?;
     //validate time and owner
-    let is_apporve = _validatre_approve(deps, env, info, id);
+    let is_apporve = _validatre_approve(deps.as_ref(), env.clone(), info.clone(), id);
     if !is_apporve {
         return Err(ContractError::Unauthorized {});
     }
@@ -96,16 +96,16 @@ pub fn execute_execute(
     }
     if info.funds[0] != option.counter_offer {
         return Err(ContractError::CounterOfferMismatch {
-            offer: info.funds[0],
+            offer: info.funds[0].clone(),
             counter_offer: option.counter_offer,
         });
     }
     let mut res: Response = Response::new();
-    let send_to_owner = Coin{denom:option.collateral.denom,amount: option.collateral.amount.multiply_ratio(Uint128::new(98), Uint128::new(100))};
-    let fees = Coin{denom:option.collateral.denom,amount: option.collateral.amount.multiply_ratio(Uint128::new(2), Uint128::new(100))};
+    let send_to_owner = Coin{denom:option.collateral.denom.clone(),amount: option.collateral.amount.clone().multiply_ratio(Uint128::new(98), Uint128::new(100))};
+    let fees = Coin{denom:option.collateral.denom.clone(),amount: option.collateral.amount.clone().multiply_ratio(Uint128::new(2), Uint128::new(100))};
     res = res.add_message(BankMsg::Send {
         to_address: option.creator.to_string(),
-        amount: vec![option.counter_offer],
+        amount: vec![option.counter_offer.clone()],
     });
     res = res.add_message(BankMsg::Send {
         to_address: option.owner.to_string(),
@@ -114,13 +114,13 @@ pub fn execute_execute(
     res = res.add_message(BankMsg::Send { to_address:state.owner.to_string() , amount: vec![fees] });
     res = res.add_message(BankMsg::Send {
         to_address: option.owner.to_string(),
-        amount: vec![option.collateral],
+        amount: vec![option.collateral.clone()],
     });
 
     // Emit the Option executed event
     ConstellationDerivativeEvent::emit_execute_option(deps.as_ref(), id)?;
     option.isBurned = true;
-    OPTION_LIST.save(deps.storage, id,&option);
+    OPTION_LIST.save(deps.storage, id,&option)?;
     res = res.add_attribute("action", "execute");
     Ok(res)
 }
@@ -137,7 +137,7 @@ pub fn execute_split(
         Err(error) => return Err(ContractError::Std(error)),
     };
     let mut state =  CONFIG.load(deps.storage)?;
-    let is_approve = _validatre_approve(deps, env, info, id);
+    let is_approve = _validatre_approve(deps.as_ref(), env.clone(), info.clone(), id);
     if percentage>=100{
         return Err(ContractError::Over100{});
     }
@@ -149,11 +149,11 @@ pub fn execute_split(
         return Err(ContractError::OptionExpired { expired: option.expires });
     }
     let key = state.total_options_amount;
-    let new_collateral = Coin{denom:option.counter_offer.denom,amount: option.counter_offer.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
-    let old_collateral = Coin{denom:option.counter_offer.denom,amount: option.counter_offer.amount-new_collateral.amount};
+    let new_collateral = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
+    let old_collateral = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount-new_collateral.amount};
 
-    let new_counter_toffer = Coin{denom:option.counter_offer.denom,amount: option.counter_offer.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
-    let old_counter_offer = Coin{denom:option.counter_offer.denom,amount: option.counter_offer.amount-new_counter_toffer.amount};
+    let new_counter_toffer = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
+    let old_counter_offer = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount-new_counter_toffer.amount};
     let new_data:Data = Data { 
         creator: option.creator.clone(), 
         owner: option.owner.clone(), 
@@ -165,9 +165,9 @@ pub fn execute_split(
     option.collateral = old_collateral;
     option.counter_offer = old_counter_offer;
     state.total_options_amount = key+1;
-    OPTION_LIST.save(deps.storage, id, &option);
-    OPTION_LIST.save(deps.storage, key, &new_data);
-    CONFIG.save(deps.storage, &state);
+    OPTION_LIST.save(deps.storage, id, &option)?;
+    OPTION_LIST.save(deps.storage, key, &new_data)?;
+    CONFIG.save(deps.storage, &state)?;
     OPTION_LIST.remove(deps.storage, id);
     let res: Response =
     Response::new().add_attributes([("action", "create option"), ("id", &key.to_string())]); 
@@ -187,7 +187,7 @@ pub fn execute_transfer(
         Err(error) => return Err(ContractError::Std(error)),
     };
     //validate time and owner
-    let is_approve = _validatre_approve(deps, env, info, id);
+    let is_approve = _validatre_approve(deps.as_ref(), env.clone(), info.clone(), id);
     if !is_approve{
         return Err(ContractError::Unauthorized {});
     }
@@ -230,12 +230,12 @@ pub fn execute_claim(
         return Err(ContractError::OptionNotExpired { expires: option.expires });
     }
     let mut res = Response::new();
-    res = res.add_message(BankMsg::Send { to_address: option.creator.to_string(), amount: vec![option.collateral]}).add_attribute("action", "claim");
+    res = res.add_message(BankMsg::Send { to_address: option.creator.to_string(), amount: vec![option.collateral.clone()]}).add_attribute("action", "claim");
     option.isBurned = true;
     // Emit the event
     ConstellationDerivativeEvent::emit_option_claimed(deps.as_ref(), id)?;
 
-    OPTION_LIST.save(deps.storage, id, &option);
+    OPTION_LIST.save(deps.storage, id, &option)?;
     res = res.add_attribute("action", "claim");
     Ok(res)
 }
@@ -257,7 +257,7 @@ pub fn  execute_create(
     let new_data:Data = Data { 
         creator: info.sender.clone(), 
         owner: info.sender.clone(), 
-        collateral: info.funds[0], 
+        collateral: info.funds[0].clone(), 
         counter_offer: counter_offer, 
         expires:expires,
         isBurned: false,
@@ -304,21 +304,21 @@ pub fn execute_burn(
     let mut res = Response::new();
     res = res.add_message(BankMsg::Send {
         to_address: option.creator.to_string(),
-        amount: vec![option.collateral],
+        amount: vec![option.collateral.clone()],
     });
 
     ConstellationDerivativeEvent::emit_option_burned(deps.as_ref(), id, info.sender.to_string() )?;
     option.isBurned = true;
-    OPTION_LIST.save(deps.storage, id, &option);
+    OPTION_LIST.save(deps.storage, id, &option)?;
     res = res.add_attribute("action", "burn");
     Ok(res)
 }
 
 // validate message sender is appove to control the option, if approve return ture, disapprove return false
-fn _validatre_approve(deps: DepsMut,env: Env,info: MessageInfo,id:u64)->bool{
+fn _validatre_approve(deps: Deps,_: Env,info: MessageInfo,id:u64)->bool{
     let option = match OPTION_LIST.load(deps.storage,id ){
         Ok(option)=> option,
-        Err(error) => return false,
+        Err(_) => return false,
     };
     if option.isBurned{
         return false;
@@ -327,8 +327,8 @@ fn _validatre_approve(deps: DepsMut,env: Env,info: MessageInfo,id:u64)->bool{
         return true;
     }
     let is_approve = match  APPROVE_LIST.load(deps.storage, (option.owner, info.sender)){
-        Ok(isApprove)=>isApprove,
-        Err(error)=> return false,
+        Ok(is_approve)=>is_approve,
+        Err(_)=> return false,
     };
     if is_approve{
         return  true;

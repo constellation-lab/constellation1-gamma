@@ -1,19 +1,19 @@
 import { Chain, AssetList } from '@chain-registry/types';
 export const nibiruChian: Chain = {
-    "chain_id": "nibiru-itn-1",
-    "chain_name": "nibiru-itn-1",
+    "chain_id": "nibiru-itn-3",
+    "chain_name": "nibiru-itn-3",
     "status": "live",
     "network_type": "testnet",
     "pretty_name": "nibiru test net",
     "apis": {
       "rpc": [
           {
-              "address": "https://rpc.itn-1.nibiru.fi",
+              "address": "https://rpc.itn-3.nibiru.fi",
           }
       ],
       "rest": [
           {
-              "address": "https://lcd.itn-1.nibiru.fi"
+              "address": "https://lcd.itn-3.nibiru.fi"
           }
       ],
       "grpc": []
@@ -44,7 +44,7 @@ export const nibiruChian: Chain = {
 };
 
 export const nibiruAssets: AssetList = {
-  "chain_name": "nibiru-itn-1",
+  "chain_name": "nibiru-testnet-1",
   "assets": [
       {
           "description": "The native token of nibiru",
@@ -65,7 +65,7 @@ export const nibiruAssets: AssetList = {
           "display": "nibi",
           "symbol": "NIBI",
           "logo_URIs": {
-            "svg": "https://app.nibiru.fi/static/media/iconNIBI.568d89b7c290f1b0b2f5c092b2f0dd32.svg"
+            "svg": "../../public/nibi.png"
           },
           "keywords": [
               "dex",

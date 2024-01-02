@@ -11,25 +11,6 @@ export type ExecuteMsg = {
     time_stamp: number;
   };
 } | {
-  add_to_market: {
-    amount: number;
-    denom: string;
-    id: number;
-  };
-} | {
-  remove_from_market: {
-    id: number;
-  };
-} | {
-  buy: {
-    id: number;
-  };
-} | {
-  update_price: {
-    id: number;
-    price: Coin[];
-  };
-} | {
   transfer: {
     id: number;
     to: string;
@@ -43,8 +24,21 @@ export type ExecuteMsg = {
     id: number;
   };
 } | {
-  claim: {
+  claim_collateral: {
     id: number;
+  };
+} | {
+  split: {
+    id: number;
+    percentage: number;
+  };
+} | {
+  approve: {
+    spender: string;
+  };
+} | {
+  dis_approve: {
+    spender: string;
   };
 };
 export type Uint128 = string;
@@ -67,13 +61,6 @@ export type QueryMsg = {
     id: number;
   };
 } | {
-  market_options: {};
-} | {
-  maket_options_pagee: {
-    amount: number;
-    key: number;
-  };
-} | {
   createor_options: {
     addr: string;
   };
@@ -81,21 +68,26 @@ export type QueryMsg = {
   owner_options: {
     addr: string;
   };
+} | {
+  get_is_approve: {
+    owner: string;
+    spender: string;
+  };
 };
 export type Addr = string;
 export interface State {
-  creator: Addr;
-  total_options_num: number;
+  owner: Addr;
+  total_options_amount: number;
 }
 export type Timestamp = Uint64;
 export type Uint64 = string;
 export type ArrayOfTupleOfUint64AndData = [number, Data][];
 export interface Data {
-  collateral: Coin[];
-  counter_offer: Coin[];
+  collateral: Coin;
+  counter_offer: Coin;
   creator: Addr;
   expires: Timestamp;
-  onsale: boolean;
+  isBurned: boolean;
   owner: Addr;
-  price: Coin[];
 }
+export type Boolean = boolean;

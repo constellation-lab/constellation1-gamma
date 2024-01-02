@@ -3,14 +3,14 @@
   "title": "State",
   "type": "object",
   "required": [
-    "creator",
-    "total_options_num"
+    "owner",
+    "total_options_amount"
   ],
   "properties": {
-    "creator": {
+    "owner": {
       "$ref": "#/definitions/Addr"
     },
-    "total_options_num": {
+    "total_options_amount": {
       "type": "integer",
       "format": "uint64",
       "minimum": 0.0

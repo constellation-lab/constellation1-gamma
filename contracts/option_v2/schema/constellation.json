@@ -45,115 +45,6 @@
       {
         "type": "object",
         "required": [
-          "add_to_market"
-        ],
-        "properties": {
-          "add_to_market": {
-            "type": "object",
-            "required": [
-              "amount",
-              "denom",
-              "id"
-            ],
-            "properties": {
-              "amount": {
-                "type": "integer",
-                "format": "uint128",
-                "minimum": 0.0
-              },
-              "denom": {
-                "type": "string"
-              },
-              "id": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "remove_from_market"
-        ],
-        "properties": {
-          "remove_from_market": {
-            "type": "object",
-            "required": [
-              "id"
-            ],
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "buy"
-        ],
-        "properties": {
-          "buy": {
-            "type": "object",
-            "required": [
-              "id"
-            ],
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "update_price"
-        ],
-        "properties": {
-          "update_price": {
-            "type": "object",
-            "required": [
-              "id",
-              "price"
-            ],
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "price": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/Coin"
-                }
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
           "transfer"
         ],
         "properties": {
@@ -227,10 +118,10 @@
       {
         "type": "object",
         "required": [
-          "claim"
+          "claim_collateral"
         ],
         "properties": {
-          "claim": {
+          "claim_collateral": {
             "type": "object",
             "required": [
               "id"
@@ -240,6 +131,77 @@
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "split"
+        ],
+        "properties": {
+          "split": {
+            "type": "object",
+            "required": [
+              "id",
+              "percentage"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "percentage": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "approve"
+        ],
+        "properties": {
+          "approve": {
+            "type": "object",
+            "required": [
+              "spender"
+            ],
+            "properties": {
+              "spender": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "dis_approve"
+        ],
+        "properties": {
+          "dis_approve": {
+            "type": "object",
+            "required": [
+              "spender"
+            ],
+            "properties": {
+              "spender": {
+                "type": "string"
               }
             },
             "additionalProperties": false
@@ -355,48 +317,6 @@
       {
         "type": "object",
         "required": [
-          "market_options"
-        ],
-        "properties": {
-          "market_options": {
-            "type": "object",
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "maket_options_pagee"
-        ],
-        "properties": {
-          "maket_options_pagee": {
-            "type": "object",
-            "required": [
-              "amount",
-              "key"
-            ],
-            "properties": {
-              "amount": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "key": {
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
           "createor_options"
         ],
         "properties": {
@@ -435,6 +355,31 @@
           }
         },
         "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "get_is_approve"
+        ],
+        "properties": {
+          "get_is_approve": {
+            "type": "object",
+            "required": [
+              "owner",
+              "spender"
+            ],
+            "properties": {
+              "owner": {
+                "type": "string"
+              },
+              "spender": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
       }
     ]
   },
@@ -446,14 +391,14 @@
       "title": "State",
       "type": "object",
       "required": [
-        "creator",
-        "total_options_num"
+        "owner",
+        "total_options_amount"
       ],
       "properties": {
-        "creator": {
+        "owner": {
           "$ref": "#/definitions/Addr"
         },
-        "total_options_num": {
+        "total_options_amount": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
@@ -513,22 +458,15 @@
             "counter_offer",
             "creator",
             "expires",
-            "onsale",
-            "owner",
-            "price"
+            "isBurned",
+            "owner"
           ],
           "properties": {
             "collateral": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "counter_offer": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "creator": {
               "$ref": "#/definitions/Addr"
@@ -536,17 +474,11 @@
             "expires": {
               "$ref": "#/definitions/Timestamp"
             },
-            "onsale": {
+            "isBurned": {
               "type": "boolean"
             },
             "owner": {
               "$ref": "#/definitions/Addr"
-            },
-            "price": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
             }
           },
           "additionalProperties": false
@@ -569,6 +501,11 @@
         }
       }
     },
+    "get_is_approve": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Boolean",
+      "type": "boolean"
+    },
     "get_option_byid": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Data",
@@ -578,22 +515,15 @@
         "counter_offer",
         "creator",
         "expires",
-        "onsale",
-        "owner",
-        "price"
+        "isBurned",
+        "owner"
       ],
       "properties": {
         "collateral": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Coin"
-          }
+          "$ref": "#/definitions/Coin"
         },
         "counter_offer": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Coin"
-          }
+          "$ref": "#/definitions/Coin"
         },
         "creator": {
           "$ref": "#/definitions/Addr"
@@ -601,17 +531,11 @@
         "expires": {
           "$ref": "#/definitions/Timestamp"
         },
-        "onsale": {
+        "isBurned": {
           "type": "boolean"
         },
         "owner": {
           "$ref": "#/definitions/Addr"
-        },
-        "price": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Coin"
-          }
         }
       },
       "additionalProperties": false,
@@ -634,210 +558,6 @@
               "type": "string"
             }
           }
-        },
-        "Timestamp": {
-          "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
-          "allOf": [
-            {
-              "$ref": "#/definitions/Uint64"
-            }
-          ]
-        },
-        "Uint128": {
-          "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
-          "type": "string"
-        },
-        "Uint64": {
-          "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
-          "type": "string"
-        }
-      }
-    },
-    "maket_options_pagee": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Array_of_Tuple_of_uint64_and_Data",
-      "type": "array",
-      "items": {
-        "type": "array",
-        "items": [
-          {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          {
-            "$ref": "#/definitions/Data"
-          }
-        ],
-        "maxItems": 2,
-        "minItems": 2
-      },
-      "definitions": {
-        "Addr": {
-          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
-          "type": "string"
-        },
-        "Coin": {
-          "type": "object",
-          "required": [
-            "amount",
-            "denom"
-          ],
-          "properties": {
-            "amount": {
-              "$ref": "#/definitions/Uint128"
-            },
-            "denom": {
-              "type": "string"
-            }
-          }
-        },
-        "Data": {
-          "type": "object",
-          "required": [
-            "collateral",
-            "counter_offer",
-            "creator",
-            "expires",
-            "onsale",
-            "owner",
-            "price"
-          ],
-          "properties": {
-            "collateral": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
-            },
-            "counter_offer": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
-            },
-            "creator": {
-              "$ref": "#/definitions/Addr"
-            },
-            "expires": {
-              "$ref": "#/definitions/Timestamp"
-            },
-            "onsale": {
-              "type": "boolean"
-            },
-            "owner": {
-              "$ref": "#/definitions/Addr"
-            },
-            "price": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
-            }
-          },
-          "additionalProperties": false
-        },
-        "Timestamp": {
-          "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
-          "allOf": [
-            {
-              "$ref": "#/definitions/Uint64"
-            }
-          ]
-        },
-        "Uint128": {
-          "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
-          "type": "string"
-        },
-        "Uint64": {
-          "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
-          "type": "string"
-        }
-      }
-    },
-    "market_options": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Array_of_Tuple_of_uint64_and_Data",
-      "type": "array",
-      "items": {
-        "type": "array",
-        "items": [
-          {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          {
-            "$ref": "#/definitions/Data"
-          }
-        ],
-        "maxItems": 2,
-        "minItems": 2
-      },
-      "definitions": {
-        "Addr": {
-          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
-          "type": "string"
-        },
-        "Coin": {
-          "type": "object",
-          "required": [
-            "amount",
-            "denom"
-          ],
-          "properties": {
-            "amount": {
-              "$ref": "#/definitions/Uint128"
-            },
-            "denom": {
-              "type": "string"
-            }
-          }
-        },
-        "Data": {
-          "type": "object",
-          "required": [
-            "collateral",
-            "counter_offer",
-            "creator",
-            "expires",
-            "onsale",
-            "owner",
-            "price"
-          ],
-          "properties": {
-            "collateral": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
-            },
-            "counter_offer": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
-            },
-            "creator": {
-              "$ref": "#/definitions/Addr"
-            },
-            "expires": {
-              "$ref": "#/definitions/Timestamp"
-            },
-            "onsale": {
-              "type": "boolean"
-            },
-            "owner": {
-              "$ref": "#/definitions/Addr"
-            },
-            "price": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
-            }
-          },
-          "additionalProperties": false
         },
         "Timestamp": {
           "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
@@ -903,22 +623,15 @@
             "counter_offer",
             "creator",
             "expires",
-            "onsale",
-            "owner",
-            "price"
+            "isBurned",
+            "owner"
           ],
           "properties": {
             "collateral": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "counter_offer": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "creator": {
               "$ref": "#/definitions/Addr"
@@ -926,17 +639,11 @@
             "expires": {
               "$ref": "#/definitions/Timestamp"
             },
-            "onsale": {
+            "isBurned": {
               "type": "boolean"
             },
             "owner": {
               "$ref": "#/definitions/Addr"
-            },
-            "price": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
             }
           },
           "additionalProperties": false
@@ -1005,22 +712,15 @@
             "counter_offer",
             "creator",
             "expires",
-            "onsale",
-            "owner",
-            "price"
+            "isBurned",
+            "owner"
           ],
           "properties": {
             "collateral": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "counter_offer": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "creator": {
               "$ref": "#/definitions/Addr"
@@ -1028,17 +728,11 @@
             "expires": {
               "$ref": "#/definitions/Timestamp"
             },
-            "onsale": {
+            "isBurned": {
               "type": "boolean"
             },
             "owner": {
               "$ref": "#/definitions/Addr"
-            },
-            "price": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
             }
           },
           "additionalProperties": false
@@ -1107,22 +801,15 @@
             "counter_offer",
             "creator",
             "expires",
-            "onsale",
-            "owner",
-            "price"
+            "isBurned",
+            "owner"
           ],
           "properties": {
             "collateral": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "counter_offer": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
+              "$ref": "#/definitions/Coin"
             },
             "creator": {
               "$ref": "#/definitions/Addr"
@@ -1130,17 +817,11 @@
             "expires": {
               "$ref": "#/definitions/Timestamp"
             },
-            "onsale": {
+            "isBurned": {
               "type": "boolean"
             },
             "owner": {
               "$ref": "#/definitions/Addr"
-            },
-            "price": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Coin"
-              }
             }
           },
           "additionalProperties": false

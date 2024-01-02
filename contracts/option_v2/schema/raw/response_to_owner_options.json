@@ -44,22 +44,15 @@
         "counter_offer",
         "creator",
         "expires",
-        "onsale",
-        "owner",
-        "price"
+        "isBurned",
+        "owner"
       ],
       "properties": {
         "collateral": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Coin"
-          }
+          "$ref": "#/definitions/Coin"
         },
         "counter_offer": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Coin"
-          }
+          "$ref": "#/definitions/Coin"
         },
         "creator": {
           "$ref": "#/definitions/Addr"
@@ -67,17 +60,11 @@
         "expires": {
           "$ref": "#/definitions/Timestamp"
         },
-        "onsale": {
+        "isBurned": {
           "type": "boolean"
         },
         "owner": {
           "$ref": "#/definitions/Addr"
-        },
-        "price": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Coin"
-          }
         }
       },
       "additionalProperties": false

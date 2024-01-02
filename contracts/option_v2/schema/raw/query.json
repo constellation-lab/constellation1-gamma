@@ -83,48 +83,6 @@
     {
       "type": "object",
       "required": [
-        "market_options"
-      ],
-      "properties": {
-        "market_options": {
-          "type": "object",
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "maket_options_pagee"
-      ],
-      "properties": {
-        "maket_options_pagee": {
-          "type": "object",
-          "required": [
-            "amount",
-            "key"
-          ],
-          "properties": {
-            "amount": {
-              "type": "integer",
-              "format": "uint64",
-              "minimum": 0.0
-            },
-            "key": {
-              "type": "integer",
-              "format": "uint64",
-              "minimum": 0.0
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
         "createor_options"
       ],
       "properties": {
@@ -156,6 +114,31 @@
           ],
           "properties": {
             "addr": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "get_is_approve"
+      ],
+      "properties": {
+        "get_is_approve": {
+          "type": "object",
+          "required": [
+            "owner",
+            "spender"
+          ],
+          "properties": {
+            "owner": {
+              "type": "string"
+            },
+            "spender": {
               "type": "string"
             }
           },

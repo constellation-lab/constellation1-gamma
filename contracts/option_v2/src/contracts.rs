@@ -168,7 +168,6 @@ pub fn execute_split(
     OPTION_LIST.save(deps.storage, id, &option)?;
     OPTION_LIST.save(deps.storage, key, &new_data)?;
     CONFIG.save(deps.storage, &state)?;
-    OPTION_LIST.remove(deps.storage, id);
     let res: Response =
     Response::new().add_attributes([("action", "create option"), ("id", &key.to_string())]); 
     Ok(res)

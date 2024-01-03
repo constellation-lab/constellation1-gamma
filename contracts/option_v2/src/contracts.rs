@@ -112,10 +112,6 @@ pub fn execute_execute(
         amount: vec![send_to_owner],
     });
     res = res.add_message(BankMsg::Send { to_address:state.owner.to_string() , amount: vec![fees] });
-    res = res.add_message(BankMsg::Send {
-        to_address: option.owner.to_string(),
-        amount: vec![option.collateral.clone()],
-    });
 
     // Emit the Option executed event
     ConstellationDerivativeEvent::emit_execute_option(deps.as_ref(), id)?;

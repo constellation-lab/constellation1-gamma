@@ -145,8 +145,8 @@ pub fn execute_split(
         return Err(ContractError::OptionExpired { expired: option.expires });
     }
     let key = state.total_options_amount;
-    let new_collateral = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
-    let old_collateral = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount-new_collateral.amount};
+    let new_collateral = Coin{denom:option.collateral.denom.clone(),amount: option.collateral.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
+    let old_collateral = Coin{denom:option.collateral.denom.clone(),amount: option.collateral.amount-new_collateral.amount};
 
     let new_counter_toffer = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount.multiply_ratio(Uint128::new(percentage as u128), Uint128::new(100))};
     let old_counter_offer = Coin{denom:option.counter_offer.denom.clone(),amount: option.counter_offer.amount-new_counter_toffer.amount};

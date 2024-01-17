@@ -11,6 +11,7 @@ pub struct Data {
     pub owner: Addr,
     pub collateral: Coin,
     pub counter_offer: Coin,
+    //if one option is burned this will be set true, else is the false
     pub isBurned: bool,
     pub expires: Timestamp,
 }
@@ -24,7 +25,7 @@ pub struct State {
 
 pub const CONFIG_KEY: &str = "config";
 pub const OPTION_LIST_KEY: &str = "option_list";
-pub const APPROVE_LIST_KEY: &str = "option_list";
+pub const APPROVE_LIST_KEY: &str = "approve_list";
 
 
 

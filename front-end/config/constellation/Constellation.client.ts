@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, ExecuteMsg, Uint128, Coin, QueryMsg, Addr, State, Timestamp, Uint64, ArrayOfTupleOfUint64AndData, Data } from "./Constellation.types";
+import { InstantiateMsg, ExecuteMsg, Uint128, Coin, QueryMsg, Addr, State, Timestamp, Uint64, ArrayOfTupleOfUint64AndData, Data, Boolean } from "./Constellation.types";
 export interface ConstellationReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<State>;
@@ -23,14 +23,6 @@ export interface ConstellationReadOnlyInterface {
   }: {
     id: number;
   }) => Promise<Data>;
-  marketOptions: () => Promise<ArrayOfTupleOfUint64AndData>;
-  maketOptionsPagee: ({
-    amount,
-    key
-  }: {
-    amount: number;
-    key: number;
-  }) => Promise<ArrayOfTupleOfUint64AndData>;
   createorOptions: ({
     addr
   }: {
@@ -41,6 +33,13 @@ export interface ConstellationReadOnlyInterface {
   }: {
     addr: string;
   }) => Promise<ArrayOfTupleOfUint64AndData>;
+  getIsApprove: ({
+    owner,
+    spender
+  }: {
+    owner: string;
+    spender: string;
+  }) => Promise<Boolean>;
 }
 export class ConstellationQueryClient implements ConstellationReadOnlyInterface {
   client: CosmWasmClient;
@@ -53,10 +52,9 @@ export class ConstellationQueryClient implements ConstellationReadOnlyInterface 
     this.options = this.options.bind(this);
     this.optionsPage = this.optionsPage.bind(this);
     this.getOptionByid = this.getOptionByid.bind(this);
-    this.marketOptions = this.marketOptions.bind(this);
-    this.maketOptionsPagee = this.maketOptionsPagee.bind(this);
     this.createorOptions = this.createorOptions.bind(this);
     this.ownerOptions = this.ownerOptions.bind(this);
+    this.getIsApprove = this.getIsApprove.bind(this);
   }
 
   config = async (): Promise<State> => {
@@ -94,25 +92,6 @@ export class ConstellationQueryClient implements ConstellationReadOnlyInterface 
       }
     });
   };
-  marketOptions = async (): Promise<ArrayOfTupleOfUint64AndData> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      market_options: {}
-    });
-  };
-  maketOptionsPagee = async ({
-    amount,
-    key
-  }: {
-    amount: number;
-    key: number;
-  }): Promise<ArrayOfTupleOfUint64AndData> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      maket_options_pagee: {
-        amount,
-        key
-      }
-    });
-  };
   createorOptions = async ({
     addr
   }: {
@@ -135,6 +114,20 @@ export class ConstellationQueryClient implements ConstellationReadOnlyInterface 
       }
     });
   };
+  getIsApprove = async ({
+    owner,
+    spender
+  }: {
+    owner: string;
+    spender: string;
+  }): Promise<Boolean> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_is_approve: {
+        owner,
+        spender
+      }
+    });
+  };
 }
 export interface ConstellationInterface extends ConstellationReadOnlyInterface {
   contractAddress: string;
@@ -145,32 +138,6 @@ export interface ConstellationInterface extends ConstellationReadOnlyInterface {
   }: {
     counterOffer: Coin[];
     timeStamp: number;
-  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  addToMarket: ({
-    amount,
-    denom,
-    id
-  }: {
-    amount: number;
-    denom: string;
-    id: number;
-  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  removeFromMarket: ({
-    id
-  }: {
-    id: number;
-  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  buy: ({
-    id
-  }: {
-    id: number;
-  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  updatePrice: ({
-    id,
-    price
-  }: {
-    id: number;
-    price: Coin[];
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   transfer: ({
     id,
@@ -189,10 +156,27 @@ export interface ConstellationInterface extends ConstellationReadOnlyInterface {
   }: {
     id: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  claim: ({
+  claimCollateral: ({
     id
   }: {
     id: number;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  split: ({
+    id,
+    percentage
+  }: {
+    id: number;
+    percentage: number;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  approve: ({
+    spender
+  }: {
+    spender: string;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  disApprove: ({
+    spender
+  }: {
+    spender: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class ConstellationClient extends ConstellationQueryClient implements ConstellationInterface {
@@ -206,14 +190,13 @@ export class ConstellationClient extends ConstellationQueryClient implements Con
     this.sender = sender;
     this.contractAddress = contractAddress;
     this.create = this.create.bind(this);
-    this.addToMarket = this.addToMarket.bind(this);
-    this.removeFromMarket = this.removeFromMarket.bind(this);
-    this.buy = this.buy.bind(this);
-    this.updatePrice = this.updatePrice.bind(this);
     this.transfer = this.transfer.bind(this);
     this.execute = this.execute.bind(this);
     this.burn = this.burn.bind(this);
-    this.claim = this.claim.bind(this);
+    this.claimCollateral = this.claimCollateral.bind(this);
+    this.split = this.split.bind(this);
+    this.approve = this.approve.bind(this);
+    this.disApprove = this.disApprove.bind(this);
   }
 
   create = async ({
@@ -227,59 +210,6 @@ export class ConstellationClient extends ConstellationQueryClient implements Con
       create: {
         counter_offer: counterOffer,
         time_stamp: timeStamp
-      }
-    }, fee, memo, _funds);
-  };
-  addToMarket = async ({
-    amount,
-    denom,
-    id
-  }: {
-    amount: number;
-    denom: string;
-    id: number;
-  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
-    return await this.client.execute(this.sender, this.contractAddress, {
-      add_to_market: {
-        amount,
-        denom,
-        id
-      }
-    }, fee, memo, _funds);
-  };
-  removeFromMarket = async ({
-    id
-  }: {
-    id: number;
-  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
-    return await this.client.execute(this.sender, this.contractAddress, {
-      remove_from_market: {
-        id
-      }
-    }, fee, memo, _funds);
-  };
-  buy = async ({
-    id
-  }: {
-    id: number;
-  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
-    return await this.client.execute(this.sender, this.contractAddress, {
-      buy: {
-        id
-      }
-    }, fee, memo, _funds);
-  };
-  updatePrice = async ({
-    id,
-    price
-  }: {
-    id: number;
-    price: Coin[];
-  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
-    return await this.client.execute(this.sender, this.contractAddress, {
-      update_price: {
-        id,
-        price
       }
     }, fee, memo, _funds);
   };
@@ -319,14 +249,50 @@ export class ConstellationClient extends ConstellationQueryClient implements Con
       }
     }, fee, memo, _funds);
   };
-  claim = async ({
+  claimCollateral = async ({
     id
   }: {
     id: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      claim: {
+      claim_collateral: {
         id
+      }
+    }, fee, memo, _funds);
+  };
+  split = async ({
+    id,
+    percentage
+  }: {
+    id: number;
+    percentage: number;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      split: {
+        id,
+        percentage
+      }
+    }, fee, memo, _funds);
+  };
+  approve = async ({
+    spender
+  }: {
+    spender: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      approve: {
+        spender
+      }
+    }, fee, memo, _funds);
+  };
+  disApprove = async ({
+    spender
+  }: {
+    spender: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      dis_approve: {
+        spender
       }
     }, fee, memo, _funds);
   };

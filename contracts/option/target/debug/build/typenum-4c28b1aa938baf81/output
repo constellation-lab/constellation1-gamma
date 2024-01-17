@@ -1,3 +1,0 @@
-cargo:rerun-if-changed=build/main.rs
-cargo:rustc-env=TYPENUM_BUILD_CONSTS=/Users/panxinyang/workspace/constellation1-gamma/contracts/option/target/debug/build/typenum-4c28b1aa938baf81/out/consts.rs
-cargo:rustc-env=TYPENUM_BUILD_OP=/Users/panxinyang/workspace/constellation1-gamma/contracts/option/target/debug/build/typenum-4c28b1aa938baf81/out/op.rs

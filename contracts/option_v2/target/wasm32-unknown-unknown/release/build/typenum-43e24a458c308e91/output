@@ -1,3 +1,0 @@
-cargo:rerun-if-changed=build/main.rs
-cargo:rustc-env=TYPENUM_BUILD_CONSTS=D:\workspace\constellation1-gamma\contracts\option_v2\target\wasm32-unknown-unknown\release\build\typenum-43e24a458c308e91\out\consts.rs
-cargo:rustc-env=TYPENUM_BUILD_OP=D:\workspace\constellation1-gamma\contracts\option_v2\target\wasm32-unknown-unknown\release\build\typenum-43e24a458c308e91\out\op.rs

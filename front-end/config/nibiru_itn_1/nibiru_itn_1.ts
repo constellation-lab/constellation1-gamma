@@ -44,7 +44,7 @@ export const nibiruChian: Chain = {
 };
 
 export const nibiruAssets: AssetList = {
-  "chain_name": "nibiru-testnet-1",
+  "chain_name": "nibiru-itn-3",
   "assets": [
       {
           "description": "The native token of nibiru",
@@ -65,7 +65,7 @@ export const nibiruAssets: AssetList = {
           "display": "nibi",
           "symbol": "NIBI",
           "logo_URIs": {
-            "svg": "../../public/nibi.png"
+            "svg": "https://app.nibiru.fi/assets/coloredNUSD-ce40c602.svg"
           },
           "keywords": [
               "dex",
@@ -89,7 +89,7 @@ export const nibiruAssets: AssetList = {
           "symbol": "NUSD",
           "coingecko_id": "ion",
           "logo_URIs": {
-            "svg": "https://app.nibiru.fi/static/media/iconNUSD.30192bfda0480cbed13d8345361ef811.svg"
+            "svg": "https://app.nibiru.fi/assets/coloredTether-5bdcd470.svg"
           },
           "keywords": [
               "memecoin"

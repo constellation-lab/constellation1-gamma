@@ -1,9 +1,8 @@
 # constelllation1_options
 
-The Constellation GammaProtocol aka constellation is a decentralized options protocol that allows users to create arbitrary option listings. As the name implies constellation is meant to launch web3 derivatives across various blockchains and across various blockchain ecosystems in strive towards interoperability among them, hence a constellation of web3 derivative products that promote the adoption of web3 derivatives at all levels.
-This project implements an options trading contract code in rust configured for the nibiru chain and intends to build a complete options trading platform. . 
+The Constellation Gamma Protocol, aka constellation, is a decentralized options protocol that allows users to create arbitrary option listings. As the name implies constellation is meant to launch web3 derivatives across various blockchains and across various blockchain ecosystems in strive towards interoperability among them, hence a constellation of web3 derivative products that promote the adoption of web3 derivatives at all levels. This project implements an options trading contract code in Rust configured for the Nibiru chain and intends to build a complete options trading platform.
 
-We implemented an options trading smart contract for the nibiru blockchain. Our code allows creating new options, specifying a collateral amount, counter offer amount, expiration time, amongst others and we intend to develop complex strategies in future. However, at this point the options system we developed has the details below:
+We implemented an options trading smart contract for the Nibiru blockchain. Our code allows creating new options, specifying a collateral amount, counter offer amount, expiration time, amongst others and we intend to develop complex strategies in future. However, at this point the options system we developed has the details below:
 Options are created by specifying collateral, a counter offer amount, and expiration time. The creator stakes assets into the option upon creation.
 The option is owned by the creator initially. It exists in a base state not listed on the market.
 Options can be listed by the owner on a market for sale by setting a price. Others can then buy the options.
@@ -16,7 +15,7 @@ Before expiry, Options can be executed by the owner by providing the correct cou
 If the expiration time is reached, anyone (typically the creator) can claim the option. This returns the staked collateral to the creator and deletes the option.
 The owner can also burn an unexpired option, which acts like a claim but is only callable by the owner.
 Various queries are supported to get option details (by ID), get all options, get options by owner/creator address, paginated options, among others.
-In summary, our code implements core options trading functionality like creation, buying, selling, exercising with expiration on the nibiru blockchain. 
+In summary, our code implements core options trading functionality like creation, buying, selling, exercising with expiration on the Nibiru blockchain. 
 
 you can run ```cargo wasm``` at /contracts/option to build the wasm code
 Additional functionality in progress are as below:

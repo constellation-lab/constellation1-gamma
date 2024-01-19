@@ -133,6 +133,8 @@ const OptionCard = ({
 export const MarketOptionsList = ()=>{
     const { address, getCosmWasmClient } = useChain(chainName);
     const [datas, setData] = useState<ArrayOfTupleOfUint64AndData>() 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const {tx} = useTx(chainName,"unibi",contractAddress)
 
     const handleQueryOwnerList =async () =>{
         if (!address){
@@ -151,18 +153,33 @@ export const MarketOptionsList = ()=>{
           })
         options.then((value)=>{setData(value);console.log(value)})
     } 
+    const handleApprove = async () => {
+      setIsSubmitting(true)
+      let msg:ExecuteMsg = {
+          approve:{
+          spender:"nibi1w3t6kvkvhudyrcvveu9yzyh3sv7ykpst4t532q"
+          }
+      }
+      const funds:Coin[]=[]
+      console.log(msg)
+      await tx(msg,{},funds);
+      setIsSubmitting(false)
+    }
+
+
+
     return(
     <Box>
-        <VStack spacing={5}>
-        <Button onClick={handleQueryOwnerList} w="full" justifyContent="center" >Refresh the options you created</Button>
-        {datas?(
+        {/* <VStack spacing={5}> */}
+        <Button onClick={handleApprove} w="full" justifyContent="center" >set Approve for market</Button>
+        {/* {datas?(
             datas.map((data)=>{
                 return(
                         <OptionCard data={data[1]} id={data[0]} key = {data[0]}/>
                 )
             })
         ):(<Skeleton w="full" h={{ base: 6, sm: 100 }} />)}
-        </VStack>
+        </VStack> */}
     </Box>
     )
 }

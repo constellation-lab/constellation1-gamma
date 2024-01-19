@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Data } from '../config/constellation/Constellation.types';
 import React from "react";
 import { ExecuteMsg } from "../config/constellation/Constellation.types";
-import { Coin } from "@cosmjs/amino";
 import { useTx } from "../hook";
 
 
@@ -32,7 +31,7 @@ const ExeButton = ({
 
     const handleClaim = async () => {
         setIsSubmitting(true)
-        let msg:ExecuteMsg = {claim:{
+        let msg:ExecuteMsg = {claim_collateral:{
             id:id
         }}
         console.log(msg)
@@ -58,7 +57,7 @@ const ExeButton = ({
             <PopoverCloseButton />
             <PopoverBody>
             <VStack align="start" fontWeight="bold" fontSize={{ md: 'lg' }}  mb={1}>
-                <Flex justify="space-between" w = "full"><Text> you will get:</Text><Text>{Number(data.collateral[0].amount)/1000000}{getdenomMap().get(data.collateral[0].denom)}</Text></Flex> 
+                <Flex justify="space-between" w = "full"><Text> you will get:</Text><Text>{Number(data.collateral.amount)/1000000}{getdenomMap().get(data.collateral.denom)}</Text></Flex> 
            </VStack>        
 
             </PopoverBody>
@@ -109,8 +108,8 @@ const OptionCard = ({
       >
         <VStack align="start" fontWeight="bold" fontSize={{ md: 'lg' }} color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')} mb={1}>
            <Flex justify="space-between" w = "full"><Text flex={1} mr={2}> ID</Text><Text>{id}</Text></Flex> 
-           <Flex justify="space-between" w = "full"><Text> collateral:</Text><Text>{Number(data.collateral[0].amount)/1000000}{getdenomMap().get(data.collateral[0].denom)}</Text></Flex> 
-           <Flex justify="space-between" w = "full"><Text> count offer:</Text><Text>{Number(data.counter_offer[0].amount)/1000000}{getdenomMap().get(data.counter_offer[0].denom)}</Text></Flex> 
+           <Flex justify="space-between" w = "full"><Text> collateral:</Text><Text>{Number(data.collateral.amount)/1000000}{getdenomMap().get(data.collateral.denom)}</Text></Flex> 
+           <Flex justify="space-between" w = "full"><Text> count offer:</Text><Text>{Number(data.counter_offer.amount)/1000000}{getdenomMap().get(data.counter_offer.denom)}</Text></Flex> 
            <Flex justify="space-between" w = "full"><Text> expiration date: </Text><Text>{(new Date(Number(data.expires)/1000000)).toDateString()}</Text></Flex>
            <Flex justify="end" w = "full">
             <ExeButton id={id} data={data}/>

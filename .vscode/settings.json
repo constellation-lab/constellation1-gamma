@@ -1,6 +1,0 @@
-{
-    "rust-analyzer.linkedProjects": [
-        "./contracts/option/Cargo.toml",
-    ],
-    "rust-analyzer.server.path": "/Users/panxinyang/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer"
-}

@@ -1,2 +1,2 @@
-export const chainName = 'nibiru-itn-1';
-export const contractAddress = 'nibi1jq0heqgj847hwamu8tzsag04ferz29eueee3c0cz5jx9e84satlqvvpdhn';
+export const chainName = 'nibiru-itn-3';
+export const contractAddress = 'nibi1f8ehel3gphc3vaq028at9nckpgpa3d0frgaet6av2wfm7u6t4znqyrzj3p';

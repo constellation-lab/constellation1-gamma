@@ -1,13 +1,10 @@
-use std::env;
-use std::ops::Add;
-use std::sync::mpsc::SendError;
 use cw_storage_plus::Bound;
 
 #[allow(unused_imports)]
 use cosmwasm_std::{QueryRequest,WasmQuery,WasmMsg,SubMsg,
     Addr,entry_point, to_json_binary,Order, BankMsg, Deps, DepsMut, Env, MessageInfo, Response,Binary ,StdResult, Coin,Timestamp, Uint128};
-use constellation::msg::{ExecuteMsg as OPExecutemsg, GetOptionByIdResponse, OptionsResponse, QueryMsg as OPQueryMsg};
-use crate::state::{ContractParams, CONTRACT_PARAMS,LISTITEM_LIST,BID_LIST, ListItem, Bid};
+use constellation::msg::{ GetOptionByIdResponse, OptionsResponse, QueryMsg as OPQueryMsg};
+use crate::state::{ CONTRACT_PARAMS,LISTITEM_LIST,BID_LIST};
 use crate::msgs::{ ContractParamsResponse, ListItemData,GetListItemByIdResponse, ListItemsResponse,BidListRespose, QueryMsg}; 
 use crate::error::ContractError;
 
@@ -22,11 +19,11 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
         QueryMsg::GetListItemsByid { id }=>to_json_binary(&query_item_by_id(deps,_env,id)?),
         QueryMsg::OwnerListItems { addr }=>to_json_binary(&query_owner_list_items(deps, addr)?),
         QueryMsg::OwnerUnListItems { addr } =>to_json_binary(&query_owner_unlist_items(deps, addr)?),
-        QueryMsg::BidList { id }=>to_json_binary(&query_bid_List(deps, id)?),
+        QueryMsg::BidList { id }=>to_json_binary(&query_bid_list(deps, id)?),
     }
 }
 
-pub fn query_bid_List(deps: Deps, id: u64) -> StdResult<BidListRespose>{
+pub fn query_bid_list(deps: Deps, id: u64) -> StdResult<BidListRespose>{
     let bids:StdResult<Vec<_>> = BID_LIST.prefix(id).range(deps.storage, None, None, Order::Ascending).collect();
     let resp =bids?;
     Ok(resp)
@@ -111,7 +108,7 @@ pub fn query_list_item_page(deps: Deps,_env: Env,key: u64,amount: u64) -> StdRes
 }
 
 pub fn query_owner_list_items(deps: Deps, addr: String) -> StdResult<ListItemsResponse>{
-    let mut address = deps.api.addr_validate(&addr)?;
+    let address = deps.api.addr_validate(&addr)?;
     let state = CONTRACT_PARAMS.load(deps.storage)?;
     let contrac_addr = state.option_address;
     let items:StdResult<Vec<_>> =LISTITEM_LIST.range(deps.storage, None, None, Order::Ascending).collect();
@@ -138,7 +135,7 @@ pub fn query_owner_list_items(deps: Deps, addr: String) -> StdResult<ListItemsRe
 }
 
 pub fn query_owner_unlist_items(deps:Deps,addr: String) -> StdResult<ListItemsResponse>{
-    let mut address = deps.api.addr_validate(&addr)?;
+    let address = deps.api.addr_validate(&addr)?;
     let state = CONTRACT_PARAMS.load(deps.storage)?;
     let contrac_addr = state.option_address;
     let options = get_owner_options(deps, &contrac_addr, &address).unwrap();

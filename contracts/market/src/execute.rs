@@ -28,6 +28,8 @@ pub fn instantiate(
     Ok(Response::default())
 }
 
+#[cfg_attr(not(feature = "library"), entry_point)]
+#[allow(dead_code)]
 pub fn execute(
     deps: DepsMut,
     env: Env,
@@ -46,6 +48,7 @@ pub fn execute(
         ExecuteMsg::UpdatePrice { id, price } => execute_update_price(deps, env, info, id,price),
     }
 }
+
 pub fn execute_list(
     deps: DepsMut,
     env: Env,

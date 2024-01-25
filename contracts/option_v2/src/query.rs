@@ -7,7 +7,7 @@ use cosmwasm_std::{
 use cw_storage_plus::Bound;
 
 //Queries
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 #[allow(dead_code)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {

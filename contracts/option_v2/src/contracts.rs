@@ -9,7 +9,7 @@ use crate::error::ContractError;
 
 
 // like solidity's constractor func, just run once when the contract init.
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 #[allow(dead_code)]
 pub fn instantiate(
     deps: DepsMut,
@@ -29,7 +29,7 @@ pub fn instantiate(
 }
 
 //The transaction msg will first come here, and the fn will route them to solver
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 #[allow(dead_code)]
 pub fn execute(
     deps: DepsMut,

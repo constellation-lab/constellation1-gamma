@@ -50,10 +50,11 @@ pub enum QueryMsg {
     GetListItemsByid{id:u64},
     #[returns(ListItemsResponse)]
     OwnerListItems{addr: String},
+    #[returns(ListItemsResponse)]
+    OwnerUnListItems{addr: String},
+
     #[returns(BidListRespose)]
-    BidListResponse{id: u64},
-    #[returns(bool)]
-    GetIsApprove{spender:String,owner:String}
+    BidList{id: u64},
 
 }
 
@@ -69,11 +70,8 @@ pub struct ListItemData{
     pub owner: Addr,
     pub collateral: Coin,
     pub counter_offer: Coin,
-    pub is_burned: bool,
     pub expires: Timestamp,
     //List data
-    pub seller: Addr,
     pub price: Uint128,
-    pub expires_at: Timestamp,
-    pub is_active: bool,
+    pub list_expires: Timestamp,
 }

@@ -1,19 +1,19 @@
 import { Chain, AssetList } from '@chain-registry/types';
 export const nibiruChian: Chain = {
-    "chain_id": "nibiru-itn-3",
-    "chain_name": "nibiru-itn-3",
+    "chain_id": "nibiru-testnet-1",
+    "chain_name": "nibiru-testnet-1",
     "status": "live",
     "network_type": "testnet",
     "pretty_name": "nibiru test net",
     "apis": {
       "rpc": [
           {
-              "address": "https://rpc.itn-3.nibiru.fi",
+              "address": "https://rpc.testnet-1.nibiru.fi",
           }
       ],
       "rest": [
           {
-              "address": "https://lcd.itn-3.nibiru.fi"
+              "address": "https://lcd.testnet-1.nibiru.fi:443"
           }
       ],
       "grpc": []

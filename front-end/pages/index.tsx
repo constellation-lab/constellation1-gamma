@@ -1,15 +1,11 @@
 import Head from 'next/head';
 import {
-  Box,
-  Divider,
   Grid,
   Container,
-  Link,
   Button,
   Flex,
   Icon,
   useColorMode,
-  useColorModeValue,
   GridItem,
   Center,
   Tabs,

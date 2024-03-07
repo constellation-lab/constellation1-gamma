@@ -30,7 +30,7 @@ export const nibiruChian: Chain = {
     "secp256k1"
   ],
   "bech32_prefix": "nibi",
-    "fees": {
+  "fees": {
       "fee_tokens": [
           {
               "denom": "unibi",
@@ -43,8 +43,10 @@ export const nibiruChian: Chain = {
   },
 };
 
+
+
 export const nibiruAssets: AssetList = {
-  "chain_name": "nibiru-itn-3",
+  "chain_name": "nibiru-testnet-1",
   "assets": [
       {
           "description": "The native token of nibiru",

@@ -144,6 +144,7 @@ pub fn execute_buy(
         msg: to_json_binary(&option_transfer_msg)?,
         funds: vec![],
     };
+    LISTITEM_LIST.remove(deps.storage, id);
     res.messages.push(SubMsg::new(exec_option_transfer));
     Ok(res)
 }

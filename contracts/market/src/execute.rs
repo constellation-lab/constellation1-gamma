@@ -1,4 +1,3 @@
-use std::sync::mpsc::SendError;
 
 #[allow(unused_imports)]
 use cosmwasm_std::{QueryRequest,WasmQuery,WasmMsg,SubMsg,
@@ -36,13 +35,12 @@ pub fn execute(
     info: MessageInfo,
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
-    let api = deps.api;
 
     match msg {
         ExecuteMsg::List { id, price, expires } => execute_list(deps, env, info, id, price, expires),
         ExecuteMsg::RemoveList { id }=> execute_remove_list(deps, env, info, id),
         ExecuteMsg::SetBid { id, expires }=> execute_set_bid(deps, env, info, id,expires),
-        ExecuteMsg::RemoveBid { id } =>execute_remove_bid(deps, env, info, id),
+        ExecuteMsg::RemoveBid { id } =>execute_remove_bid(deps, info, id),
         ExecuteMsg::AcceptBid { id, bidder }=> execute_accept_bid(deps, env, info, id,bidder),
         ExecuteMsg::Buy { id } => execute_buy(deps, env, info, id),
         ExecuteMsg::UpdatePrice { id, price } => execute_update_price(deps, env, info, id,price),
@@ -57,9 +55,9 @@ pub fn execute_list(
     price: Uint128,
     expires: u64,
 ) -> Result<Response, ContractError> {
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
+    let params = CONTRACT_PARAMS.load(deps.storage)?;
     let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
-    let is_approve = get_is_approve(deps.as_ref(), &info.clone(), &params.option_address.clone(), &info.sender.clone(),&option.owner.clone())?;
+    let is_approve = get_is_approve(deps.as_ref(), &params.option_address.clone(), &env.contract.address,&option.owner.clone())?;
     if option.isBurned || option.expires < env.block.time{
         return Err(ContractError::OptionIsburnedOrexpired{});
     }
@@ -76,8 +74,8 @@ pub fn execute_list(
         price: price,
         expires_at: expires,
     };
-    LISTITEM_LIST.save(deps.storage, id, &item);
-    let mut res = Response::new();
+    LISTITEM_LIST.save(deps.storage, id, &item).unwrap();
+    let res = Response::new();
     return Ok(res);
 }
 
@@ -88,9 +86,9 @@ pub fn execute_accept_bid(
     id: u64,
     bidder: String,
 )->Result<Response, ContractError>{
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
+    let params = CONTRACT_PARAMS.load(deps.storage)?;
     let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
-    let is_approve = get_is_approve(deps.as_ref(), &info.clone(), &params.option_address.clone(), &info.sender.clone(),&option.owner.clone())?;
+    let is_approve = get_is_approve(deps.as_ref(), &params.option_address.clone(), &env.contract.address,&option.owner.clone())?;
     if option.isBurned || option.expires < env.block.time{
         return Err(ContractError::OptionIsburnedOrexpired{});
     }
@@ -121,9 +119,8 @@ pub fn execute_buy(
     info: MessageInfo,
     id: u64,
 )->Result<Response, ContractError>{
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
+    let params = CONTRACT_PARAMS.load(deps.storage)?;
     let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
-    let is_approve = get_is_approve(deps.as_ref(), &info.clone(), &params.option_address.clone(), &info.sender.clone(),&option.owner.clone())?;
     if option.isBurned || option.expires < env.block.time{
         return Err(ContractError::OptionIsburnedOrexpired{});
     }
@@ -156,14 +153,14 @@ pub fn execute_remove_list(
     info: MessageInfo,
     id: u64,
 )->Result<Response, ContractError>{
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
+    let params = CONTRACT_PARAMS.load(deps.storage)?;
     let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
-    let is_approve = get_is_approve(deps.as_ref(), &info.clone(), &params.option_address.clone(), &info.sender.clone(),&option.owner.clone())?;
+    let is_approve = get_is_approve(deps.as_ref(), &params.option_address.clone(), &env.contract.address,&option.owner.clone())?;
     if !is_approve || option.owner != info.sender{
         return Err(ContractError::UnauthorizedOperator {});
     }
     LISTITEM_LIST.remove(deps.storage, id);
-    let mut res = Response::new();
+    let res = Response::new();
     return Ok(res);
 }
 
@@ -174,16 +171,16 @@ pub fn execute_update_price(
     id: u64,
     price: Uint128,
 )->Result<Response, ContractError>{
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
+    let params = CONTRACT_PARAMS.load(deps.storage)?;
     let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
-    let is_approve = get_is_approve(deps.as_ref(), &info.clone(), &params.option_address.clone(), &info.sender.clone(),&option.owner.clone())?;
+    let is_approve = get_is_approve(deps.as_ref(),  &params.option_address.clone(), &env.contract.address,&option.owner.clone())?;
     if !is_approve || option.owner != info.sender{
         return Err(ContractError::UnauthorizedOperator {});
     }
     let mut item = LISTITEM_LIST.load(deps.storage, id)?;
     item.price = price;
-    LISTITEM_LIST.save(deps.storage, id, &item);
-    let mut res = Response::new();
+    LISTITEM_LIST.save(deps.storage, id, &item).unwrap();
+    let res = Response::new();
     return Ok(res);
 }
 
@@ -195,7 +192,7 @@ pub fn execute_set_bid(
     id: u64,
     expires: u64,
 )->Result<Response, ContractError>{
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
+    let params = CONTRACT_PARAMS.load(deps.storage)?;
     let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
     let expires = Timestamp::from_seconds(expires);
     if option.isBurned || option.expires < env.block.time{
@@ -208,21 +205,18 @@ pub fn execute_set_bid(
         price: info.funds[0].amount,
         expires_at: expires,
     };
-    BID_LIST.save(deps.storage, (id,info.sender), &bid);
-    let mut res = Response::new();
+    BID_LIST.save(deps.storage, (id,info.sender), &bid).unwrap();
+    let res = Response::new();
     return Ok(res);
 }
 
 pub fn execute_remove_bid(
     deps: DepsMut,
-    env: Env,
     info: MessageInfo,
     id: u64,
 )->Result<Response, ContractError>{
-    let mut params = CONTRACT_PARAMS.load(deps.storage)?;
-    let option = get_option_info(deps.as_ref(), &info.clone(), &params.option_address.clone(), id)?;
     BID_LIST.remove(deps.storage, (id,info.sender));
-    let mut res = Response::new();
+    let res = Response::new();
     return Ok(res);
 }
 
@@ -243,7 +237,6 @@ fn get_option_info(
 ///Checks the sender is approve to control the options
 fn get_is_approve(
     deps: Deps,
-    info: &MessageInfo,
     option_contract: &Addr,
     spender: &Addr,
     owner: &Addr,

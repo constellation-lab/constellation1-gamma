@@ -53,7 +53,6 @@ export default function Home() {
       </TabList>
       <TabPanels>
         <TabPanel><CreateOption /></TabPanel>
-        <TabPanel><MarketOptionsList/></TabPanel>
         <TabPanel><OwnerOptionList/></TabPanel>
         <TabPanel><CreatedOptionsList/></TabPanel>
       </TabPanels>

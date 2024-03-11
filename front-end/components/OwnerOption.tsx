@@ -310,6 +310,7 @@ export const OwnerOptionList = ()=>{
              "addr":address
           }
           })
+        console.log(options)
         options.then((value)=>{setData(value);console.log(value)})
     } 
     return(

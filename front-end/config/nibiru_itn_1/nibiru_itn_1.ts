@@ -1,19 +1,19 @@
 import { Chain, AssetList } from '@chain-registry/types';
 export const nibiruChian: Chain = {
-    "chain_id": "nibiru-testnet-1",
-    "chain_name": "nibiru-testnet-1",
+    "chain_id": "cataclysm-1",
+    "chain_name": "cataclysm-1",
     "status": "live",
-    "network_type": "testnet",
-    "pretty_name": "nibiru test net",
+    "network_type": "mainnet",
+    "pretty_name": "nibiru mainnet net",
     "apis": {
       "rpc": [
           {
-              "address": "https://rpc.testnet-1.nibiru.fi",
+              "address": "https://rpc.nibiru.fi:443",
           }
       ],
       "rest": [
           {
-              "address": "https://lcd.testnet-1.nibiru.fi:443"
+              "address": "https://rpc.nibiru.fi:443"
           }
       ],
       "grpc": []
@@ -46,7 +46,7 @@ export const nibiruChian: Chain = {
 
 
 export const nibiruAssets: AssetList = {
-  "chain_name": "nibiru-testnet-1",
+  "chain_name": "cataclysm-1",
   "assets": [
       {
           "description": "The native token of nibiru",

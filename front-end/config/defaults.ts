@@ -1,3 +1,3 @@
-export const chainName = 'nibiru-testnet-1';
-export const contractAddress = 'nibi13nrd2qag9dww078z9a2way4kvzpr0k5dkv54e2xfmp2e2decfmjqnlf2wc';
-export const MarketAddress = 'nibi1hntfu45etpkdf8prq6p6la9tsnk3u3muf5378kds73c7xd4qdzyscka8pj';
+export const chainName = 'cataclysm-1';
+export const contractAddress = 'nibi1np4pvfw5fe9nj6ds3fv8v9cm9d8umasm8ew8p2r269anqnchws9q5eq7l9';
+export const MarketAddress = 'nibi1az885vpd2azjmepzhs3t9fftv4td44cyk526jykgpzseghtj44qqtwtemd';

@@ -26,7 +26,7 @@ import {
   useDisclosure,
   useOutsideClick,
   useRadioGroup,
-  Tooltip
+  Tooltip,
 } from '@chakra-ui/react';
 import { chains } from 'chain-registry';
 import {
@@ -86,7 +86,6 @@ const Setting = ({
       onClose={onClose}
       initialFocusRef={initialFocusRef}
     >
-      <Tooltip label="You can set the expiration time of your options here." >What is duration Setting</Tooltip>
       <PopoverTrigger>
         <Button
           position="relative"
@@ -433,7 +432,7 @@ const FromToken = ({
                 borderColor="orange.300"
                 mr={{ base: 2, sm: 4 }}
               >
-                <Image  boxSize='75px' src={fromItem.imgSrc} />
+                <Image  boxSize='full' src={fromItem.imgSrc} />
               </Box>
               <Text
                 fontSize={{ base: 'xl', sm: '3xl' }}
@@ -744,7 +743,7 @@ const ToToken = ({
                 borderColor="orange.200"
                 mr={{ base: 2, sm: 4 }}
               >
-                <Image boxSize='75px' src={toItem.imgSrc} />
+                <Image boxSize='full' src={toItem.imgSrc} />
               </Box>
               <Text
                 fontSize={{ base: 'xl', sm: '3xl' }}
@@ -809,7 +808,6 @@ const ToToken = ({
 
       </Flex>
       <Box
-        position="absolute"
         zIndex="dropdown"
         bg={useColorModeValue('gray.100', 'gray.700')}
         boxShadow={isOpen ? '0 12px 20px -8px rgba(105, 88, 164, 0.5)' : 'none'}
@@ -1103,7 +1101,9 @@ export const CreateOption = () => {
 
   return (
     <Stack spacing={6} w="full" p={{ base: 4, sm: 6 }}>
-      <Box zIndex={3000} alignSelf="end">
+      <Box alignSelf="end">
+      <Tooltip label="You can set the expiration time of your options here." >What is duration Setting</Tooltip>
+
       <Setting setDuration = {setDuration}/>
 
       </Box>

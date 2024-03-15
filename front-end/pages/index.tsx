@@ -40,14 +40,9 @@ function RiskWarningModal() {
         <ModalContent>
           <ModalHeader>Risks Warning</ModalHeader>
           <ModalBody>
-          Trading options involves risk and may not be suitable for every investor. The valuation of options may fluctuate, and as a result, clients may lose more than their original investment. The impact of seasonal and geopolitical events is already factored into market prices. The highly leveraged nature of options trading means that small market movements may have a great impact on your trading account. This can work against you as well as for you, leading to large losses or gains.
+          Trading options involves risk and may not be suitable for every investor. The valuation of options may fluctuate, and as a result. The impact of seasonal and geopolitical events is already factored into market prices.  you should carefully consider your investment objectives, level of experience, and risk appetite. There is always a possibility of losing some or all of your initial investment; hence you should not invest money that you cannot afford to lose. You should be aware of all the risks associated with options trading and seek advice from an independent financial advisor if you have any doubts.
 
-Before deciding to trade options, you should carefully consider your investment objectives, level of experience, and risk appetite. There is always a possibility of losing some or all of your initial investment; hence you should not invest money that you cannot afford to lose. You should be aware of all the risks associated with options trading and seek advice from an independent financial advisor if you have any doubts.
-
-The website and its affiliates take no responsibility for any loss or damage, including without limitation, any loss of profit, which may arise directly or indirectly from the use of or reliance on such information. We do not provide investment advice, and the information on this website should not be construed as such. All content on this site is provided for informational and educational purposes only and is not intended as financial advice.
-
-By proceeding to trade, you acknowledge and accept the risks associated with options trading and agree that you are solely responsible for any trading decisions and outcomes that may result.
-
+The website and its affiliates take no responsibility for any loss or damage. We do not provide investment advice, and the information on this website should not be construed as such. All content on this site is provided for informational and educational purposes only and is not intended as financial advice.
 
           </ModalBody>
           <ModalFooter>

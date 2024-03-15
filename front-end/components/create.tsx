@@ -25,8 +25,8 @@ import {
   useColorModeValue,
   useDisclosure,
   useOutsideClick,
-  useRadio,
-  useRadioGroup
+  useRadioGroup,
+  Tooltip
 } from '@chakra-ui/react';
 import { chains } from 'chain-registry';
 import {
@@ -86,6 +86,7 @@ const Setting = ({
       onClose={onClose}
       initialFocusRef={initialFocusRef}
     >
+      <Tooltip label="You can set the expiration time of your options here." >What is duration Setting</Tooltip>
       <PopoverTrigger>
         <Button
           position="relative"
@@ -387,7 +388,7 @@ const FromToken = ({
         mb={4}
       >
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
-        collateral
+        <Tooltip label="In options trading, collateral refers to the assets required to be deposited by a trader to cover potential losses on a position." fontSize="md">Collateral</Tooltip>
         </Text>
         <Flex
           maxW={{ sm: '2xs' }}
@@ -715,7 +716,7 @@ const ToToken = ({
         mb={4}
       >
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
-        count offer
+        <Tooltip label="A counter offer in negotiation is a response to an initial offer, proposing different terms in order to reach an agreement that is more favorable to the responding party" fontSize="md">Counter offer</Tooltip>
         </Text>
       </Flex>
       <Flex align="center" maxW="full" h="fit-content">
@@ -922,7 +923,7 @@ const Rate = ({
         color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
         mb={1}
       >
-        <Text> collateral: </Text>
+        <Text> Collateral: </Text>
         <Text>{tokenInputValue}{fromItem.label}</Text>
       </Flex>
       <Flex
@@ -933,7 +934,7 @@ const Rate = ({
         color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
         mb={1}
       >
-        <Text> count offer: </Text>
+        <Text> Counter offer: </Text>
         <Text>{tokenTovalue}{toItem.label}</Text>
       </Flex>
       <Flex
@@ -1004,7 +1005,7 @@ const CreateButton =  ({
                   // eslint-disable-next-line react-hooks/rules-of-hooks
                   color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
                   mb={1}>
-                  <Text> collateral: </Text>
+                  <Text> Collateral: </Text>
                   <Text>{tokenInputValue}{fromItem.label}</Text>
               </Flex>
               <Flex
@@ -1015,7 +1016,7 @@ const CreateButton =  ({
                   // eslint-disable-next-line react-hooks/rules-of-hooks
                   color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
                   mb={1}>
-                <Text> count offer: </Text>
+                <Text> Counter offer: </Text>
                 <Text>{tokenTovalue}{toItem.label}</Text>
               </Flex>
               <Flex
@@ -1103,7 +1104,8 @@ export const CreateOption = () => {
   return (
     <Stack spacing={6} w="full" p={{ base: 4, sm: 6 }}>
       <Box zIndex={3000} alignSelf="end">
-        <Setting setDuration = {setDuration}/>
+      <Setting setDuration = {setDuration}/>
+
       </Box>
       <FromToken
         data={data}

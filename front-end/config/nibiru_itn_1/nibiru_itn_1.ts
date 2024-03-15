@@ -67,7 +67,7 @@ export const nibiruAssets: AssetList = {
           "display": "nibi",
           "symbol": "NIBI",
           "logo_URIs": {
-            "svg": "https://app.nibiru.fi/assets/coloredNUSD-ce40c602.svg"
+            "svg": "https://app.nibiru.fi/assets/iconNIBI-e3e952c0.svg"
           },
           "keywords": [
               "dex",
@@ -91,7 +91,7 @@ export const nibiruAssets: AssetList = {
           "symbol": "NUSD",
           "coingecko_id": "ion",
           "logo_URIs": {
-            "svg": "https://app.nibiru.fi/assets/coloredTether-5bdcd470.svg"
+            "svg": "https://app.nibiru.fi/assets/coloredNUSD-ce40c602.svg"
           },
           "keywords": [
               "memecoin"

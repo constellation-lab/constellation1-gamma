@@ -108,8 +108,8 @@ const OptionCard = ({
       >
         <VStack align="start" fontWeight="bold" fontSize={{ md: 'lg' }} color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')} mb={1}>
            <Flex justify="space-between" w = "full"><Text flex={1} mr={2}> ID</Text><Text>{id}</Text></Flex> 
-           <Flex justify="space-between" w = "full"><Text> collateral:</Text><Text>{Number(data.collateral.amount)/1000000}{getdenomMap().get(data.collateral.denom)}</Text></Flex> 
-           <Flex justify="space-between" w = "full"><Text> count offer:</Text><Text>{Number(data.counter_offer.amount)/1000000}{getdenomMap().get(data.counter_offer.denom)}</Text></Flex> 
+           <Flex justify="space-between" w = "full"><Text> Collateral:</Text><Text>{Number(data.collateral.amount)/1000000}{getdenomMap().get(data.collateral.denom)}</Text></Flex> 
+           <Flex justify="space-between" w = "full"><Text> Counter offer:</Text><Text>{Number(data.counter_offer.amount)/1000000}{getdenomMap().get(data.counter_offer.denom)}</Text></Flex> 
            <Flex justify="space-between" w = "full"><Text> expiration date: </Text><Text>{(new Date(Number(data.expires)/1000000)).toDateString()}</Text></Flex>
            <Flex justify="end" w = "full">
             <ExeButton id={id} data={data}/>

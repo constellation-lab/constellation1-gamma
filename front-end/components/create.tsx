@@ -317,7 +317,7 @@ const FromToken = ({
               h="full"
               mr={{ base: 3, sm: 4 }}
             >
-              <Image src={props.data.imgSrc} />
+              <Image boxSize='full' src={props.data.imgSrc} />
             </Box>
             <Box>
               <Text
@@ -655,7 +655,7 @@ const ToToken = ({
               h="full"
               mr={{ base: 3, sm: 4 }}
             >
-              <Image  src={props.data.imgSrc} />
+              <Image boxSize='full' src={props.data.imgSrc} />
             </Box>
             <Box>
               <Text

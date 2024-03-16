@@ -67,7 +67,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex justifyContent="end" mb={10}>
-      <Center w='1100px' h='40px'  fontWeight='bold' fontSize='50px'>Constellation Option</Center>
+      <Center w='1100px' h='40px'  fontWeight='bold' fontSize='50px'>Constella Option</Center>
         <Grid
               templateColumns='repeat(2, 0.1fr)'
               gap={30}

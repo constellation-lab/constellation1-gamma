@@ -1102,7 +1102,7 @@ export const CreateOption = () => {
   return (
     <Stack spacing={6} w="full" p={{ base: 4, sm: 6 }}>
       <Box alignSelf="end">
-      <Tooltip label="You can set the expiration time of your options here." >What is duration Setting</Tooltip>
+      <Tooltip label="You can set the expiration time of your options here." > duration Setting</Tooltip>
 
       <Setting setDuration = {setDuration}/>
 

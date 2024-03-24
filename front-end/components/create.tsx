@@ -387,7 +387,7 @@ const FromToken = ({
         mb={4}
       >
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
-        <Tooltip label="In options trading, collateral refers to the assets required to be deposited by a trader to cover potential losses on a position." fontSize="md">Collateral</Tooltip>
+        <Tooltip label="collateral refers to the assets, which the creator of the option, deposits/stakes in the option contract and which the options owner will receive upon executing the option (by providing the counteroffer)" fontSize="md">Collateral</Tooltip>
         </Text>
         <Flex
           maxW={{ sm: '2xs' }}
@@ -715,7 +715,7 @@ const ToToken = ({
         mb={4}
       >
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
-        <Tooltip label="A counter offer in negotiation is a response to an initial offer, proposing different terms in order to reach an agreement that is more favorable to the responding party" fontSize="md">Counter offer</Tooltip>
+        <Tooltip label="The counter offer amount is the amount that must be provided by the current owner of an option to execute the option. On execution, this counteroffer is sent to the original creator of the option and the staked collateral amount originally staked by the creator in the option contract, when he created the option, is sent to owner." fontSize="md">Counter offer</Tooltip>
         </Text>
       </Flex>
       <Flex align="center" maxW="full" h="fit-content">

@@ -20,6 +20,7 @@ import {
   ModalFooter,
   ModalBody,
   useDisclosure,
+  Spacer,
 } from '@chakra-ui/react';
 import { BsFillMoonStarsFill, BsFillSunFill } from 'react-icons/bs';
 import { CreatedOptionsList, CreateOption, MarketOptionsList, OwnerOptionList, WalletSection } from '../components';
@@ -67,7 +68,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex justifyContent="end" mb={10}>
-      <Center w='1100px' h='40px'  fontWeight='bold' fontSize='50px'>Constella Option</Center>
+      <Center  w='1100px' h='40px'  fontWeight='bold' fontSize='30px'>Constella Option</Center>
+      <Spacer></Spacer>
         <Grid
               templateColumns='repeat(2, 0.1fr)'
               gap={30}

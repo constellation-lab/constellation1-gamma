@@ -1,8 +1,7 @@
-import { chainName,MarketAddress } from "../config"
+import { chainName, MarketAddress } from "../config";
 import { useChain } from '@cosmos-kit/react';
-import { Box, Button,Skeleton,VStack,useColorModeValue,Flex,Text,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverArrow,PopoverCloseButton,
-    PopoverFooter,PopoverBody} from "@chakra-ui/react";
-import{ArrayOfTupleOfUint64AndListItemData,ListItemData,ExecuteMsg} from "../config/market"
+import { Box, Button, Skeleton, VStack, useColorModeValue, Flex, Text, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverArrow, PopoverCloseButton, PopoverFooter, PopoverBody, Tooltip } from "@chakra-ui/react";
+import { ArrayOfTupleOfUint64AndListItemData, ListItemData, ExecuteMsg } from "../config/market";
 import { useState } from "react";
 import React from "react";
 import { Coin } from "@cosmjs/amino";
@@ -17,7 +16,7 @@ const BuyButton = ({
     data:ListItemData
 })=>{
     const initialFocusRef = React.useRef()
-    const { assets } = useChain(chainName);
+    const { assets, address } = useChain(chainName);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const {tx} = useMarketTx(chainName,"unibi",MarketAddress)
     const getdenomMap =() => {
@@ -99,7 +98,7 @@ const OptionCard = ({
     data: ListItemData;
     id:number
   }) => {
-    const {assets} = useChain(chainName)
+    const {assets, address} = useChain(chainName)
     const getdenomMap =() => {
         let map = new Map<String,String>()
         assets.assets.map((value)=>{

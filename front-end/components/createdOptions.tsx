@@ -1,7 +1,7 @@
 import { chainName,contractAddress } from "../config"
 import { useChain } from '@cosmos-kit/react';
 import { Box, Button,Skeleton,VStack,useColorModeValue,Flex,Text,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverArrow,PopoverCloseButton,
-    PopoverFooter,PopoverBody} from "@chakra-ui/react";
+    PopoverFooter,PopoverBody, Tooltip} from "@chakra-ui/react";
 import { ArrayOfTupleOfUint64AndData } from "../config/constellation";
 import { useState } from "react";
 import { Data } from '../config/constellation/Constellation.types';
@@ -94,7 +94,7 @@ const OptionCard = ({
     data: Data;
     id:number
   }) => {
-    const {assets} = useChain(chainName)
+    const {assets, address} = useChain(chainName)
     const getdenomMap =() => {
         let map = new Map<String,String>()
         assets.assets.map((value)=>{

@@ -1,7 +1,7 @@
 import { chainName,MarketAddress } from "../config"
 import { useChain } from '@cosmos-kit/react';
 import { Box, Button ,Container,List,Skeleton, Stack,VStack,useColorModeValue,Flex,Text,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverArrow,PopoverCloseButton,
-    PopoverFooter,PopoverBody,Input, HStack,Select,Editable,EditableInput,EditablePreview} from "@chakra-ui/react";
+    PopoverFooter,PopoverBody,Input, HStack,Select,Editable,EditableInput,EditablePreview, Tooltip} from "@chakra-ui/react";
 import { ArrayOfTupleOfUint64AndListItemData,ListItemData,ExecuteMsg } from "../config/market";
 import { useState } from "react";
 import React from "react";
@@ -209,7 +209,7 @@ const OptionCard = ({
     data: ListItemData;
     id:number
   }) => {
-    const {assets} = useChain(chainName)
+    const {assets, address} = useChain(chainName)
     const getdenomMap =() => {
         let map = new Map<String,String>()
         assets.assets.map((value)=>{

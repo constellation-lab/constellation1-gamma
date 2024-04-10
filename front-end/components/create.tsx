@@ -317,7 +317,7 @@ const FromToken = ({
               h="full"
               mr={{ base: 3, sm: 4 }}
             >
-              <Image boxSize='full' src={props.data.imgSrc} />
+              <Image boxSize='full' src={props.data.imgSrc} alt={props.data.label} />
             </Box>
             <Box>
               <Text
@@ -453,7 +453,7 @@ const FromToken = ({
                 borderColor="orange.300"
                 mr={{ base: 2, sm: 4 }}
               >
-                <Image  boxSize='full' src={fromItem.imgSrc} />
+                <Image  boxSize='full' src={fromItem.imgSrc} alt={fromItem.label} />
               </Box>
               <Text
                 fontSize={{ base: 'xl', sm: '3xl' }}
@@ -681,7 +681,7 @@ const ToToken = ({
               h="full"
               mr={{ base: 3, sm: 4 }}
             >
-              <Image boxSize='full' src={props.data.imgSrc} />
+              <Image boxSize='full' src={props.data.imgSrc} alt={props.data.label} />
             </Box>
             <Box>
               <Text
@@ -769,7 +769,7 @@ const ToToken = ({
                 borderColor="orange.200"
                 mr={{ base: 2, sm: 4 }}
               >
-                <Image boxSize='full' src={toItem.imgSrc} />
+                <Image boxSize='full' src={toItem.imgSrc} alt={toItem.label} />
               </Box>
               <Text
                 fontSize={{ base: 'xl', sm: '3xl' }}
@@ -1158,7 +1158,7 @@ export const CreateOption = () => {
         setToItem(assetList![1]);  
       }
       console.log(fromItem)
-  }, [loading]);
+  }, [assets?.assets, fromItem, loading]);
 
   return (
     <Stack spacing={6} w="full" p={{ base: 4, sm: 6 }}>

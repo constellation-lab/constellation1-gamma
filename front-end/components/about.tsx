@@ -21,7 +21,7 @@ export const About = () => {
       </Text>
 
       <Text fontSize="lg" mb={8}>
-        At the simplest level, a Constella Option operates by allowing the option creator to express their confidence in the future direction of an asset by using an Option, which involves: the option creator staking an amount in the contract, called the collateral, which they send to the option owner upon execution of the option. In return, the option owner must send a counteroffer amount specified by the options creator (on creation), to receive the collateral, and it must be before the option's expiry date.
+        At the simplest level, a Constella Option operates by allowing the option creator to express their confidence in the future direction of an asset by using an Option, which involves: the option creator staking an amount in the contract, called the collateral, which they send to the option owner upon execution of the option. In return, the option owner must send a counteroffer amount specified by the options creator (on creation), to receive the collateral, and it must be before the option&apos;s expiry date.
       </Text>
 
       <Heading as="h4" size="md" mb={4}>
@@ -151,7 +151,7 @@ export const About = () => {
 
         <ListItem>
           <Text fontSize="lg">
-            <strong>Liquid Options:</strong> The platform intends to issue users our CNSTE token equivalent matching the collateral value in their option contract, so users can convert & stake this CNSTE token value and earn with the value of the collateral while its stuck in their options.
+            <strong>Liquid Options:</strong> The platform intends to issue users our CNSTE token equivalent matching the collateral value in their option contract, so users can convert &amp; stake this CNSTE token value and earn with the value of the collateral while it&apos;s stuck in their options.
           </Text>
         </ListItem>
       </OrderedList>

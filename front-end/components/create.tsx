@@ -741,7 +741,7 @@ const ToToken = ({
         mb={4}
       >
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
-        <Tooltip label="The counter offer amount is the amount that must be provided by the current owner of an option to execute the option. On execution, this counteroffer is sent to the original creator of the option and the staked collateral amount originally staked by the creator in the option contract when he created the option, is sent to owner." fontSize="md">Counter offer</Tooltip>
+        <Tooltip label="The counter offer amount is the amount that must be provided by the current owner of an option to execute the option. On execution, this counteroffer is sent to the original creator of the option and the staked collateral amount originally staked by the creator in the option contract when he created the option, is sent to the current option owner." fontSize="md">Counter offer</Tooltip>
         </Text>
       </Flex>
       <Flex align="center" maxW="full" h="fit-content">

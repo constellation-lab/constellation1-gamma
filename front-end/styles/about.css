@@ -1,0 +1,39 @@
+.about {
+    background-color: #f5f5f5;
+  }
+  
+  .about h1 {
+    font-size: 48px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .about h4 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .about h5 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .about p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #555;
+  }
+  
+  .about .feature-icon {
+    font-size: 24px;
+  }
+  
+  .about .use-case-box {
+    transition: transform 0.3s;
+  }
+  
+  .about .use-case-box:hover {
+    transform: translateY(-5px);
+  }

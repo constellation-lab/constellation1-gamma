@@ -1,0 +1,45 @@
+.home {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+  }
+
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .home-title {
+    font-size: 32px;
+    font-weight: bold;
+  }
+  
+  .home-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .home-tabs {
+    margin-top: 40px;
+  }
+  
+  .home-tabs .chakra-tabs__tablist {
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .home-tabs .chakra-tabs__tab {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 24px;
+  }
+  
+  .home-tabs .chakra-tabs__tab[aria-selected="true"] {
+    color: #fff;
+    background-color: #3182ce;
+    border-color: #3182ce;
+  }
+
+  

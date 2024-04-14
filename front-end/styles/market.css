@@ -1,0 +1,35 @@
+.market-options-list {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+
+  .market-options-header {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .approve-button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 24px;
+  }
+
+  .tab-list {
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .tab-list .chakra-tabs__tab {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 24px;
+  }
+  
+  .tab-list .chakra-tabs__tab[aria-selected="true"] {
+    color: #fff;
+    background-color: #3182ce;
+    border-color: #3182ce;
+  }
+
+  

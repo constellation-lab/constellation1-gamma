@@ -28,7 +28,11 @@ export const defaultThemeObject = {
   },
   shadows: {
     largeSoft: 'rgba(60, 64, 67, 0.15) 0px 2px 10px 6px;'
-  }
+  },
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  },
 };
 
 export const defaultTheme = extendTheme(defaultThemeObject);

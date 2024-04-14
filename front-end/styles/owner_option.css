@@ -1,0 +1,46 @@
+.owner-options-list {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .option-card {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .owner-options-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .owner-options-list-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .owner-options-list-refresh {
+    /* Add styles for the refresh button */
+  }
+
+  .option-card-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .option-card-label {
+    font-weight: bold;
+  }
+  
+  .option-card-value {
+    /* Add styles for the option card values */
+  }
+
+  

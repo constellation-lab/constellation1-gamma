@@ -81,6 +81,7 @@ const Setting = ({
   const group = getRootProps();
 
   return (
+           
     <Popover
       isOpen={isOpen}
       onClose={onClose}
@@ -1109,7 +1110,124 @@ const CreateButton =  ({
           </Popover>
     )
   }
-export const CreateOption = () => {
+
+  export const CreateOption  = () => {
+   
+    
+    
+
+
+
+
+    const [data, setData] = useState<dataType[]>([{
+      label: "NIBI",
+      value: "NIBI",
+      denom: "unibi",
+      imgSrc: "",
+    },{
+      label: "NUSD",
+      value: "NUSD",
+      denom: "unusd",
+      imgSrc: "",
+    }]);
+    const [fromItem, setFromItem] = useState<dataType>({
+      label: "NIBI",
+      value: "NIBI",
+      denom: "unibi",
+      imgSrc: "",
+    });
+    const [toItem, setToItem] = useState<dataType>({
+      label: "NUSD",
+      value: "NUSD",
+      denom: "unusd",
+      imgSrc: "",
+    });
+    const [loading, setLoading] = useState(true);
+    const [tokenInputValue, setTokenInputValue] = useState(0);
+    const [tokenCountofferValue, setTokenCountofferValue] = useState(0);
+    const [duration,setDuration]= useState<number>(1000*60*60*24*7);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    const {assets} = useChain(chainName);
+
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const assetList = assets?.assets.map((asset) => ({
+            label: asset.name,
+            value: asset.name,
+            denom: asset.denom_units[0].denom,
+            imgSrc: asset.logo_URIs?.svg,
+            ibc: asset.ibc,
+          }));
+  
+          setData(assetList || []);
+          setFromItem(assetList?.[0] || null);
+          setToItem(assetList?.[1] || null);
+        } catch (error) {
+          console.error('Error fetching asset data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }, [assets]);
+  
+    return (
+      <Box className="create-option">
+        <Flex justify="space-between" align="center" mb={6}>
+          <Text fontSize="2xl" fontWeight="bold">
+            Create Option
+          </Text>
+          <Setting setDuration={setDuration} />
+        </Flex>
+  
+        <Stack spacing={6}>
+          <FromToken
+            data={data}
+            fromItem={fromItem}
+            toItem={toItem}
+            tokenInputValue={tokenInputValue}
+            setFromItem={setFromItem}
+            setToItem={setToItem}
+            setTokenInputValue={setTokenInputValue}
+          />
+  
+          <ToToken
+            data={data}
+            toItem={toItem}
+            setToItem={setToItem}
+            tokenCountofferValue={tokenCountofferValue}
+            setTokenCountofferValue={setTokenCountofferValue}
+            setTovalue={setTokenCountofferValue}
+          />
+  
+          <Rate
+            fromItem={fromItem}
+            toItem={toItem}
+            tokenInputValue={tokenInputValue}
+            tokenTovalue={tokenCountofferValue}
+            tokenCountofferValue={tokenCountofferValue}
+            date={duration}
+          />
+  
+          <CreateButton
+            fromItem={fromItem}
+            toItem={toItem}
+            tokenInputValue={tokenInputValue}
+            tokenTovalue={tokenCountofferValue}
+            date={duration}
+          />
+        </Stack>
+      </Box>
+    );
+  };
+  
+  //export default CreateOption;  
+/*export const CreateOption = () => {
   const [data, setData] = useState<dataType[]>([{
     label: "NIBI",
     value: "NIBI",
@@ -1200,3 +1318,4 @@ export const CreateOption = () => {
     </Stack>
   );
 };
+*/

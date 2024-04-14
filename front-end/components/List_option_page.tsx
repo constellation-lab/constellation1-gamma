@@ -1,13 +1,37 @@
-import { chainName,MarketAddress } from "../config"
-import { useChain } from '@cosmos-kit/react';
-import { Box, Button ,Container,List,Skeleton, Stack,VStack,useColorModeValue,Flex,Text,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverArrow,PopoverCloseButton,
-    PopoverFooter,PopoverBody,Input, HStack,Select,Editable,EditableInput,EditablePreview, Tooltip} from "@chakra-ui/react";
+import { chainName, MarketAddress } from "../config";
+import { useChain } from "@cosmos-kit/react";
+import {
+  Box,
+  Button,
+  Container,
+  List,
+  Skeleton,
+  Stack,
+  VStack,
+  useColorModeValue,
+  Flex,
+  Text,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverFooter,
+  PopoverBody,
+  Input,
+  HStack,
+  Select,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  Tooltip,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import React from "react";
-import { ExecuteMsg,ListItemData,ArrayOfTupleOfUint64AndListItemData} from "../config/market";
+import { ExecuteMsg, ListItemData, ArrayOfTupleOfUint64AndListItemData } from "../config/market";
 import { Coin } from "@cosmjs/amino";
 import { useMarketTx } from "../hook";
-import { get } from "http";
 
 
 const ListMarketButton = ({
@@ -106,102 +130,110 @@ const ListMarketButton = ({
 
 }
 
+const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
+  const { assets, address } = useChain(chainName);
 
-const OptionCard = ({
-    data,
-    id
-  }: {
-    data: ListItemData;
-    id:number
-  }) => {
-    const {assets, address} = useChain(chainName)
-    const getdenomMap =() => {
-        let map = new Map<String,String>()
-        assets.assets.map((value)=>{
-            map.set(value.denom_units[0].denom,value.name)
-        })
-        return map;
+  const getDenomMap = () => {
+    const map = new Map<string, string>();
+    assets.assets.forEach((value) => {
+      map.set(value.denom_units[0].denom, value.name);
+    });
+    return map;
+  };
+
+  return (
+    <Box className="option-card">
+      <Flex justify="space-between" align="center" mb={4}>
+        <Text fontSize="xl" fontWeight="bold">
+          Option ID: {id}
+        </Text>
+        <ListMarketButton id={id} expires={Number(data.expires)} />
+      </Flex>
+
+      <Stack spacing={4}>
+        <Flex justify="space-between">
+          <Text fontWeight="bold">Collateral:</Text>
+          <Text>
+            {address ? (
+              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom)}`
+            ) : (
+              <Tooltip label="Connect wallet to see the value" placement="top">
+                <Text cursor="default">-</Text>
+              </Tooltip>
+            )}
+          </Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text fontWeight="bold">Counter Offer:</Text>
+          <Text>
+            {address ? (
+              `${Number(data.counter_offer.amount) / 1000000} ${getDenomMap().get(data.counter_offer.denom)}`
+            ) : (
+              <Tooltip label="Connect wallet to see the value" placement="top">
+                <Text cursor="default">-</Text>
+              </Tooltip>
+            )}
+          </Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text fontWeight="bold">Expiration Date:</Text>
+          <Text>{new Date(Number(data.expires) / 1000000).toDateString()}</Text>
+        </Flex>
+      </Stack>
+    </Box>
+  );
+};
+
+export const ListOptionList = () => {
+  const { address, getCosmWasmClient } = useChain(chainName);
+  const [datas, setData] = useState<ArrayOfTupleOfUint64AndListItemData>();
+
+  const handleQueryOwnerList = async () => {
+    if (!address) {
+      alert("Please connect your wallet!");
+      return;
     }
 
-    return (
-      <Box
-        bg={useColorModeValue('gray.50', 'whiteAlpha.200')}
-        borderRadius="xl"
-        boxShadow={useColorModeValue('0 0 2px gray', '0 0 2px white')}
-        p={6}
-        w = "full"
-      >
-        <VStack align="start" fontWeight="bold" fontSize={{ md: 'lg' }} color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')} mb={1}>
-           <Flex justify="space-between" w = "full"><Text flex={1} mr={2}> ID</Text><Text>{id}</Text></Flex> 
-           <Flex justify="space-between" w = "full"><Text> Collateral:</Text>
-            <Text>
-              {address ? (
-                `${Number(data.collateral.amount)/1000000} ${getdenomMap().get(data.collateral.denom)}`
-              ) : (
-                <Tooltip label="Connect wallet to see the value" placement="top">
-                  <Text cursor="default">-</Text>
-                </Tooltip>
-              )}
-            </Text>
-           </Flex> 
-           <Flex justify="space-between" w = "full"><Text> Counter offer:</Text>
-           <Text>
-              {address ? (
-                `${Number(data.counter_offer.amount)/1000000} ${getdenomMap().get(data.counter_offer.denom)}`
-              ) : (
-                <Tooltip label="Connect wallet to see the value" placement="top">
-                  <Text cursor="default">-</Text>
-                </Tooltip>
-              )}
-            </Text>
-           </Flex> 
-           <Flex justify="space-between" w = "full"><Text> Expiration Date: </Text><Text>{(new Date(Number(data.expires)/1000000)).toDateString()}</Text></Flex>
-           <Flex justify="space-between" w = "full">
-            <ListMarketButton id = {id} expires={Number(data.expires)}/>
-           </Flex>
-        </VStack>        
-      </Box>
-    );
+    let client: Awaited<ReturnType<typeof getCosmWasmClient>>;
+    try {
+      client = await getCosmWasmClient();
+    } catch (e: any) {
+      console.error(e);
+      return;
+    }
+
+    const options: Promise<ArrayOfTupleOfUint64AndListItemData> = client.queryContractSmart(MarketAddress, {
+      owner_un_list_items: {
+        addr: address,
+      },
+    });
+
+    options.then((value) => {
+      setData(value);
+      console.log(value);
+    });
   };
-  
 
+  return (
+    <Box className="list-option-list">
+      <Flex justify="space-between" align="center" mb={6}>
+        <Text fontSize="2xl" fontWeight="bold">
+          Your Options
+        </Text>
+        <Button onClick={handleQueryOwnerList}>Refresh</Button>
+      </Flex>
 
-export const ListOptionList = ()=>{
-    const { address, getCosmWasmClient } = useChain(chainName);
-    const [datas, setData] = useState<ArrayOfTupleOfUint64AndListItemData>() 
-
-    const handleQueryOwnerList =async () =>{
-        if (!address){
-            alert("please connect your wallet!!")
-            return
-        }
-        let client: Awaited<ReturnType<typeof getCosmWasmClient>>;
-        try {
-          client = await getCosmWasmClient();
-        } catch (e: any) {
-          console.error(e);
-          return;
-        }
-        let options:Promise<ArrayOfTupleOfUint64AndListItemData>  = client.queryContractSmart(MarketAddress,{
-            "owner_un_list_items":{
-             "addr":address
-          }
-          })
-        options.then((value)=>{setData(value);console.log(value)})
-    } 
-    return(
-    <Box>
-        <VStack spacing={5}>
-        <Button onClick={handleQueryOwnerList} w="full" justifyContent="center" >Refresh the options you own</Button>
-        {datas?(
-            datas.map((data)=>{
-                return(
-                        <OptionCard data={data[1]} id={data[0]} key = {data[0]}/>
-                )
-            })
-        ):(<Skeleton w="full" h={{ base: 6, sm: 100 }} />)}
-        </VStack>
+      {datas ? (
+        <Stack spacing={6}>
+          {datas.map(([id, data]) => (
+            <OptionCard key={id} data={data} id={id} />
+          ))}
+        </Stack>
+      ) : (
+        <Skeleton height={200} />
+      )}
     </Box>
-    )
-}
-
+  );
+};

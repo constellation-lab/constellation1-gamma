@@ -22,7 +22,6 @@ import {
 import { CreatedOptionsList, CreateOption, MarketOptionsList, OwnerOptionList, WalletSection } from '../components';
 import React, { useEffect } from 'react';
 import { About } from '../components';
-
 function RiskWarningModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -32,27 +31,27 @@ function RiskWarningModal() {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size={{ base: 'full', md: '2xl' }}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Text fontSize="2xl" fontWeight="bold">
+            <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
               Risk Warning
             </Text>
           </ModalHeader>
           <ModalBody>
-            <Text fontSize="lg" mb={4}>
-              Creating and Trading options involves risk and may not be suitable for every investor. The valuation of options may fluctuate as a result of many factors, like the other options in the market, hence this value may fluctuate irrespective of the value you may assign your own created option. You should carefully consider your investment objectives, level of experience, and risk appetite. There is always a possibility of losing some or all of your initial investment; hence you should not invest money that you cannot afford to lose. You should be aware of all the risks associated with options trading and seek advice from an independent financial advisor if you have any doubts.
+            <Text fontSize={{ base: 'sm', md: 'lg' }} mb={4}>
+              Creating and Trading options involves risk and may not be suitable for every investor. The valuation of options may fluctuate as a result of many factors, like other options in the market, external events, etc, hence this value may fluctuate irrespective of the value you may assign your own created option. You should carefully consider your investment objectives, level of experience, and risk appetite. There is always a possibility of losing some or all of your initial investment; hence you should not invest money that you cannot afford to lose. You should be aware of all the risks associated with options trading and seek advice from an independent financial advisor if you have any doubts.
             </Text>
-            <Text fontSize="lg" mb={4}>
+            <Text fontSize={{ base: 'sm', md: 'lg' }} mb={4}>
               The website and its affiliates take no responsibility for any loss or damage. We do not provide investment advice, and the information on this website should not be construed as such. All content on this site is provided for informational and educational purposes only and is not intended as financial advice.
             </Text>
-            <Text fontSize="lg">
+            <Text fontSize={{ base: 'sm', md: 'lg' }}>
               Lastly, participants from the U.S., Canada, Mexico, OFAC-sanctioned countries (Cuba, Iran, North Korea, Syria, Crimea, certain Ukrainian regions), and other sanctioned countries are ineligible to use this app, and hence should close and leave the app.
             </Text>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" size="lg" onClick={onClose}>
+            <Button colorScheme="blue" size={{ base: 'md', md: 'lg' }} onClick={onClose}>
               I have read and accept the risks and eligibility
             </Button>
           </ModalFooter>

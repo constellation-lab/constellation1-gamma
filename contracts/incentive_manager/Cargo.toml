@@ -1,0 +1,31 @@
+[package]
+name = "constellation_incentive_manager"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+
+
+[dependencies]
+cosmwasm-std = { version = "1.5.0", features = ["staking"] }
+wasm-bindgen = "0.2"
+cw-storage-plus = "0.13.4"
+cosmwasm-schema = "1.1.4"
+thiserror = "1.0.31"
+schemars = "0.8.1"
+constellation = { path = "../option_v2"  }
+constellation_liquidity_pool = { path = "../liquidity_pool" }
+constellation_pricing_oracle = { path = "../pricing_oracle" }
+constellation_option_marketplace = { path = "../option_marketplace" }
+
+[dev-dependencies]
+cw-multi-test = "0.13.4"
+
+[profile.release]
+debug = false
+

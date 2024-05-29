@@ -1,5 +1,5 @@
 [package]
-name = "constellation_incentive_manager"
+name = "constellation_risk_management"
 version = "0.1.0"
 edition = "2021"
 
@@ -25,6 +25,7 @@ constellation = { path = "../option_v2"  }
 constellation_liquidity_pool = { path = "../liquidity_pool" }
 constellation_pricing_oracle = { path = "../pricing_oracle" }
 constellation_option_marketplace = { path = "../option_marketplace" }
+constellation_incentive_manager = { path = "../incentive_manager" }
 
 [dev-dependencies]
 cw-multi-test = "0.13.4"

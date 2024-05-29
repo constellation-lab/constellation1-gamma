@@ -118,7 +118,6 @@ dependencies = [
  "constellation_pricing_oracle",
  "cosmwasm-schema",
  "cosmwasm-std",
- "cw-multi-test",
  "cw-storage-plus",
  "cw20",
  "cw20-base",
@@ -166,6 +165,27 @@ dependencies = [
  "cosmwasm-std",
  "cw-storage-plus",
  "schemars",
+ "thiserror",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "constellation_risk_management"
+version = "0.1.0"
+dependencies = [
+ "constellation",
+ "constellation_incentive_manager",
+ "constellation_liquidity_pool",
+ "constellation_option_marketplace",
+ "constellation_pricing_oracle",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-multi-test",
+ "cw-storage-plus",
+ "cw20",
+ "cw20-base",
+ "schemars",
+ "serde",
  "thiserror",
  "wasm-bindgen",
 ]

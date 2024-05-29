@@ -109,7 +109,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "constellation_incentive_manager"
+name = "constellation_cdt_token"
 version = "0.1.0"
 dependencies = [
  "constellation",

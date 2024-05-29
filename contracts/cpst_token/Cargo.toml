@@ -1,5 +1,5 @@
 [package]
-name = "constellation_incentive_manager"
+name = "constellation_cpst_token"
 version = "0.1.0"
 edition = "2021"
 
@@ -20,7 +20,6 @@ cw-storage-plus = "0.13.4"
 cosmwasm-schema = "1.1.4"
 thiserror = "1.0.31"
 schemars = "0.8.1"
-serde = { version = "1.0", default-features = false, features = ["derive"] }
 constellation = { path = "../option_v2"  }
 constellation_liquidity_pool = { path = "../liquidity_pool" }
 constellation_pricing_oracle = { path = "../pricing_oracle" }

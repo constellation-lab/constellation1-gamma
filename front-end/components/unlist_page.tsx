@@ -28,25 +28,28 @@ import { useMarketTx } from "../hook";
 
 
 
-const UnlistButton = ({
+  const UnlistButton = ({
     id,
     data
   }: {
-    id:number;
-    data:ListItemData
-})=>{
-    const initialFocusRef = React.useRef()
+    id: number;
+    data: ListItemData
+  }) => {
+    const initialFocusRef = React.useRef<HTMLButtonElement>(null);
     const { address, assets } = useChain(chainName);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [toAddr, setToAddr] = useState("")
-    const {tx} = useMarketTx(chainName,"unibi",MarketAddress)
-    const getdenomMap =() => {
-        let map = new Map<String,String>()
-        assets.assets.map((value)=>{
-            map.set(value.denom_units[0].denom,value.name)
-        })
+    const [toAddr, setToAddr] = useState("");
+    const { tx } = useMarketTx(chainName, "unibi", MarketAddress);
+    
+    const getdenomMap = () => {
+        let map = new Map<string, string>();
+        assets?.assets?.forEach((value) => {
+            if (value.denom_units && value.denom_units.length > 0) {
+                map.set(value.denom_units[0].denom, value.name);
+            }
+        });
         return map;
-    }
+    };
 
     const handleUnlistOption = async () => {
         setIsSubmitting(true)
@@ -113,28 +116,31 @@ const UnlistButton = ({
 
 }
 
-const UpdatePriceButton = ({
+  const UpdatePriceButton = ({
     id,
     data,
     expires
   }: {
-    id:number;
-    data:ListItemData;
+    id: number;
+    data: ListItemData;
     expires: number;
-  })=>{
-    const initialFocusRef = React.useRef()
+  }) => {
+    const initialFocusRef = React.useRef<HTMLButtonElement>(null);
     const { assets, getCosmWasmClient } = useChain(chainName);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [price, setPrice] = useState(0)
-    const [priceToken,setPriceToken] = useState("unibi")
-    const {tx} = useMarketTx(chainName,"unibi",MarketAddress)
-    const getdenomMap =() => {
-        let map = new Map<String,String>()
-        assets.assets.map((value)=>{
-            map.set(value.denom_units[0].denom,value.name)
-        })
+    const [price, setPrice] = useState(0);
+    const [priceToken, setPriceToken] = useState("unibi");
+    const { tx } = useMarketTx(chainName, "unibi", MarketAddress);
+    
+    const getdenomMap = () => {
+        let map = new Map<string, string>();
+        assets?.assets?.forEach((value) => {
+            if (value.denom_units && value.denom_units.length > 0) {
+                map.set(value.denom_units[0].denom, value.name);
+            }
+        });
         return map;
-    }
+    };
 
 
     const handleUpdatePrice = async () => {
@@ -222,8 +228,10 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
 
   const getDenomMap = () => {
     const map = new Map<string, string>();
-    assets.assets.forEach((value) => {
-      map.set(value.denom_units[0].denom, value.name);
+    assets?.assets?.forEach((value) => {
+      if (value.denom_units && value.denom_units.length > 0) {
+        map.set(value.denom_units[0].denom, value.name);
+      }
     });
     return map;
   };
@@ -244,8 +252,8 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Collateral:</Text>
           <Text>
-            {address ? (
-              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom)}`
+            {address && assets ? (
+              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom) || data.collateral.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>
@@ -257,8 +265,8 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Counter Offer:</Text>
           <Text>
-            {address ? (
-              `${Number(data.counter_offer.amount) / 1000000} ${getDenomMap().get(data.counter_offer.denom)}`
+            {address && assets ? (
+              `${Number(data.counter_offer.amount) / 1000000} ${getDenomMap().get(data.counter_offer.denom) || data.counter_offer.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>

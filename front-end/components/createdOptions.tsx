@@ -27,23 +27,31 @@ import { useTx } from "../hook";
 
 
 const ExeButton = ({
-    id,
-    data
-  }: {
-    id:number;
-    data:Data
-})=>{
-    const initialFocusRef = React.useRef()
-    const { assets } = useChain(chainName);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const {tx} = useTx(chainName,"unibi",contractAddress)
-    const getdenomMap =() => {
-        let map = new Map<String,String>()
-        assets.assets.map((value)=>{
-            map.set(value.denom_units[0].denom,value.name)
-        })
-        return map;
-    }
+  id,
+  data
+}: {
+  id: number;
+  data: Data
+}) => {
+  const initialFocusRef = React.useRef<HTMLButtonElement>(null);
+  const { assets } = useChain(chainName);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { tx } = useTx(chainName, "unibi", contractAddress);
+
+    const getdenomMap = () => {
+      if (!assets || !assets.assets) {
+        console.error('Assets are not loaded');
+        return new Map<string, string>();
+      }
+    
+      let map = new Map<string, string>();
+      assets.assets.forEach((value) => {
+        if (value.denom_units && value.denom_units.length > 0) {
+          map.set(value.denom_units[0].denom, value.name);
+        }
+      });
+      return map;
+    };
 
     const handleClaim = async () => {
         setIsSubmitting(true)
@@ -56,16 +64,20 @@ const ExeButton = ({
       }
   
 
-    return (
+      return (
         <Popover
           initialFocusRef={initialFocusRef}
           placement='bottom'
-        >{({ isOpen, onClose }) => (
-        <>
-          <PopoverTrigger>
-            <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now()<Number(data.expires)/1000000)}>Claim Expired Option</Button>
-          </PopoverTrigger>
-          <PopoverContent color='white' bg='blue.800' borderColor='blue.800' >
+        >
+          {({ isOpen, onClose }) => (
+            <>
+              <PopoverTrigger>
+                <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now() < Number(data.expires) / 1000000)}>
+                  Claim Expired Option
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+               
             <PopoverHeader pt={4} fontWeight='bold' border='10' >
             You are Claiming the Option with ID: {id} 
             </PopoverHeader>
@@ -84,17 +96,21 @@ const ExeButton = ({
             </PopoverBody>
 
             <PopoverFooter
-              border='0'
-              display='flex'
-              alignItems='center'
-              justifyContent='center'
-              pb={4}
-            >
-            <Button colorScheme='blue' ref={initialFocusRef} onClick={()=>{onClose();handleClaim();}}>
-                  Confirm
-            </Button>
-            </PopoverFooter>
-          </PopoverContent>
+                  border='0'
+                  display='flex'
+                  alignItems='center'
+                  justifyContent='center'
+                  pb={4}
+                >
+                  <Button 
+                    colorScheme='blue' 
+                    ref={initialFocusRef} 
+                    onClick={() => { onClose(); handleClaim(); }}
+                  >
+                    Confirm
+                  </Button>
+                </PopoverFooter>
+              </PopoverContent>
             </>
           )}
         </Popover>       
@@ -107,8 +123,10 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
 
   const getDenomMap = () => {
     const map = new Map<string, string>();
-    assets.assets.forEach((value) => {
-      map.set(value.denom_units[0].denom, value.name);
+    assets?.assets?.forEach((value) => {
+      if (value.denom_units && value.denom_units.length > 0) {
+        map.set(value.denom_units[0].denom, value.name);
+      }
     });
     return map;
   };
@@ -126,8 +144,8 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Collateral:</Text>
           <Text>
-            {address ? (
-              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom)}`
+            {address && assets ? (
+              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom) || data.collateral.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>
@@ -135,7 +153,6 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
             )}
           </Text>
         </Flex>
-
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Counter Offer:</Text>
           <Text>
@@ -150,11 +167,11 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
         </Flex>
 
         <Flex justify="space-between" w="full">
-          <Text fontWeight="bold">Expiration Date:</Text>
-          <Text>{new Date(Number(data.expires) / 1000000).toDateString()}</Text>
-        </Flex>
-      </VStack>
-    </Box>
+        <Text fontWeight="bold">Expiration Date:</Text>
+        <Text>{new Date(Number(data.expires) / 1000000).toDateString()}</Text>
+      </Flex>
+    </VStack>
+  </Box>
   );
 };
 

@@ -1,0 +1,231 @@
+{
+    "contract_name": "liquidity_pool",
+    "contract_version": "0.1.0",
+    "idl_version": "1.0.0",
+    "instantiate": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "InstantiateMsg",
+      "type": "object",
+      "required": [
+        "assets"
+      ],
+      "properties": {
+        "assets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Asset"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "definitions": {
+        "Asset": {
+          "type": "object",
+          "required": [
+            "denom",
+            "amount"
+          ],
+          "properties": {
+            "denom": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "execute": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ExecuteMsg",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "deposit"
+          ],
+          "properties": {
+            "deposit": {
+              "type": "object",
+              "required": [
+                "assets"
+              ],
+              "properties": {
+                "assets": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Asset"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "withdraw"
+          ],
+          "properties": {
+            "withdraw": {
+              "type": "object",
+              "required": [
+                "lp_tokens"
+              ],
+              "properties": {
+                "lp_tokens": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ],
+      "definitions": {
+        "Asset": {
+          "type": "object",
+          "required": [
+            "denom",
+            "amount"
+          ],
+          "properties": {
+            "denom": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "query": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QueryMsg",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "get_pool"
+          ],
+          "properties": {
+            "get_pool": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "get_liquidity_provider_info"
+          ],
+          "properties": {
+            "get_liquidity_provider_info": {
+              "type": "object",
+              "required": [
+                "address"
+              ],
+              "properties": {
+                "address": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "migrate": null,
+    "sudo": null,
+    "responses": {
+      "get_pool": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "LiquidityPool",
+        "type": "object",
+        "required": [
+          "assets",
+          "lp_token_supply"
+        ],
+        "properties": {
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Asset"
+            }
+          },
+          "lp_token_supply": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Asset": {
+            "type": "object",
+            "required": [
+              "denom",
+              "amount"
+            ],
+            "properties": {
+              "denom": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "get_liquidity_provider_info": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "LiquidityProviderInfo",
+        "type": "object",
+        "required": [
+          "address",
+          "assets",
+          "lp_tokens"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Asset"
+            }
+          },
+          "lp_tokens": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Asset": {
+            "type": "object",
+            "required": [
+              "denom",
+              "amount"
+            ],
+            "properties": {
+              "denom": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }

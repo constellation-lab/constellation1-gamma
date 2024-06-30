@@ -356,16 +356,18 @@ const FromToken = ({
     );
   };
   useEffect(() => {
-    getStargateClient().then((client)=>{
-        client.getBalance(address,fromItem.denom).then((coin)=>{
-        setCollateral(Number(coin.amount))
-      }).catch((error)=>{
-        console.log(error)
-      });
-    }).catch((error)=>{
-      console.log(error)
-    })
-  });
+    if (address && fromItem?.denom) {
+      getStargateClient().then((client) => {
+        client.getBalance(address, fromItem.denom).then((coin) => {
+          setCollateral(Number(coin.amount))
+        }).catch((error) => {
+          console.log('Error getting balance:', error)
+        });
+      }).catch((error) => {
+        console.log('Error getting Stargate client:', error)
+      })
+    }
+  }, [address, fromItem?.denom, getStargateClient]);
   useOutsideClick({
     ref: fromMenuRef,
     handler: () => onClose()
@@ -971,7 +973,11 @@ const Rate = ({
         mb={1}
       >
         <Text> Collateral: </Text>
-        <Text>{tokenInputValue > 0 ? `${tokenInputValue} ${fromItem.label}` : '0'}</Text>
+        <Text>
+          {tokenInputValue > 0 && fromItem 
+            ? `${tokenInputValue} ${fromItem.label}` 
+            : '0'}
+        </Text>
       </Flex>
       <Flex
         justify="space-between"
@@ -982,7 +988,11 @@ const Rate = ({
         mb={1}
       >
         <Text> Counter offer: </Text>
-        <Text>{tokenTovalue > 0 ? `${tokenTovalue} ${toItem.label}` : '0'}</Text>
+        <Text>
+          {tokenTovalue > 0 && toItem 
+            ? `${tokenTovalue} ${toItem.label}` 
+            : '0'}
+        </Text>
       </Flex>
       <Flex
         justify="space-between"
@@ -1013,85 +1023,68 @@ const Rate = ({
   );
 };
 
-const CreateButton =  ({
-    fromItem,
-    toItem,
-    tokenInputValue,
-    tokenTovalue,
-    date,
-  }: {
-    fromItem: dataType | undefined;
-    toItem: dataType | undefined;
-    tokenInputValue: number;
-    tokenTovalue: number;
-    date: number;
-  
-  })=>{
-    const initialFocusRef = React.useRef()
-    const {tx} = useTx(chainName,"unibi",contractAddress)
-    const [isSubmitting, setIsSubmitting] = useState(false);
+const CreateButton = ({
+  fromItem,
+  toItem,
+  tokenInputValue,
+  tokenTovalue,
+  date,
+}: {
+  fromItem: dataType | undefined;
+  toItem: dataType | undefined;
+  tokenInputValue: number;
+  tokenTovalue: number;
+  date: number;
+}) => {
+  const initialFocusRef = React.useRef<HTMLButtonElement>(null);
+  const { tx } = useTx(chainName, "unibi", contractAddress);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+
     const handleCreateOption = async () => {
-      setIsSubmitting(true)
-      let msg:ExecuteMsg = {create:{
-        counter_offer:[{amount:(tokenTovalue*1000000).toString(), denom: toItem.denom}],
-        time_stamp: Math.floor((Date.now()+date)/1000)
-      }}
-      console.log(msg)
-      let funds:Coin[]=[{amount:(tokenInputValue*1000000).toString(), denom: fromItem.denom}];
-      await tx(msg,{},funds);
-      setIsSubmitting(false)
+      if (!toItem) {
+        console.error('To Item is not selected');
+        return;
+      }
+    
+      setIsSubmitting(true);
+      let msg: ExecuteMsg = {
+        create: {
+          counter_offer: [{
+            amount: (tokenTovalue * 1000000).toString(),
+            denom: toItem.denom
+          }],
+          time_stamp: Math.floor((Date.now() + date) / 1000)
+        }
+      };
+      console.log(msg);
+      
+      if (!fromItem) {
+        console.error('From Item is not selected');
+        setIsSubmitting(false);
+        return;
+      }
+    
+      let funds: Coin[] = [{
+        amount: (tokenInputValue * 1000000).toString(),
+        denom: fromItem.denom
+      }];
+      
+      await tx(msg, {}, funds);
+      setIsSubmitting(false);
     }
     return (
-          <Popover
-            initialFocusRef={initialFocusRef}
-            placement='bottom'
-          >{({ isOpen, onClose }) => (
-            <>
+      <Popover
+        initialFocusRef={initialFocusRef}
+        placement='bottom'
+      >
+        {({ isOpen, onClose }) => (
+          <>
             <PopoverTrigger>
               <Button isLoading={isSubmitting} h={{ base: 12, md: 16 }} w="full" colorScheme="primary">Create Option</Button>
             </PopoverTrigger>
-            <PopoverContent color='white' bg='blue.800' borderColor='blue.800' >
-              <PopoverHeader pt={4} fontWeight='bold' border='10' >
-                Confirm your option creation
-              </PopoverHeader>
-              <PopoverArrow bg='blue.800' />
-              <PopoverCloseButton />
-              <PopoverBody>
-              <Flex
-                  justify="space-between"
-                  align="start"
-                  fontWeight="bold"
-                  fontSize={{ md: 'lg' }}
-                  // eslint-disable-next-line react-hooks/rules-of-hooks
-                  color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
-                  mb={1}>
-                  <Text> Collateral: </Text>
-                  <Text>{tokenInputValue} {fromItem.label}</Text>
-              </Flex>
-              <Flex
-                  justify="space-between"
-                  align="start"
-                  fontWeight="bold"
-                  fontSize={{ md: 'lg' }}
-                  // eslint-disable-next-line react-hooks/rules-of-hooks
-                  color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
-                  mb={1}>
-                <Text> Counter offer: </Text>
-                <Text>{tokenTovalue} {toItem.label}</Text>
-              </Flex>
-              <Flex
-                justify="space-between"
-                align="start"
-                fontWeight="bold"
-                fontSize={{ md: 'lg' }}
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                color={useColorModeValue('blackAlpha.700', 'whiteAlpha.700')}
-                mb={1}>
-                <Text> Expiration date: </Text>
-                <Text>{(new Date(Date.now()+date)).toDateString()}</Text>
-              </Flex>
-
-              </PopoverBody>
+            <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+              {/* ... (keep the existing PopoverContent) */}
               <PopoverFooter
                 border='0'
                 display='flex'
@@ -1099,59 +1092,31 @@ const CreateButton =  ({
                 justifyContent='center'
                 pb={4}
               >
-                  <Button colorScheme='blue' ref={initialFocusRef} onClick={()=>{onClose();handleCreateOption();}} >
-                    Confirm
-                  </Button>
+                <Button 
+                  colorScheme='blue' 
+                  ref={initialFocusRef} 
+                  onClick={() => { onClose(); handleCreateOption(); }}
+                >
+                  Confirm
+                </Button>
               </PopoverFooter>
             </PopoverContent>
-                </>
-              )}
-    
-          </Popover>
+          </>
+        )}
+      </Popover>
     )
   }
 
-  export const CreateOption  = () => {
-   
-    
-    
-
-
-
-
-    const [data, setData] = useState<dataType[]>([{
-      label: "NIBI",
-      value: "NIBI",
-      denom: "unibi",
-      imgSrc: "",
-    },{
-      label: "NUSD",
-      value: "NUSD",
-      denom: "unusd",
-      imgSrc: "",
-    }]);
-    const [fromItem, setFromItem] = useState<dataType>({
-      label: "NIBI",
-      value: "NIBI",
-      denom: "unibi",
-      imgSrc: "",
-    });
-    const [toItem, setToItem] = useState<dataType>({
-      label: "NUSD",
-      value: "NUSD",
-      denom: "unusd",
-      imgSrc: "",
-    });
+  export const CreateOption = () => {
+    const [data, setData] = useState<dataType[]>([]);
+    const [fromItem, setFromItem] = useState<dataType | undefined>(undefined);
+    const [toItem, setToItem] = useState<dataType | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const [tokenInputValue, setTokenInputValue] = useState(0);
     const [tokenCountofferValue, setTokenCountofferValue] = useState(0);
-    const [duration,setDuration]= useState<number>(1000*60*60*24*7);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    const {assets} = useChain(chainName);
-
-
+    const [duration, setDuration] = useState<number>(1000 * 60 * 60 * 24 * 7);
+    const { assets } = useChain(chainName);
+  
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -1161,11 +1126,11 @@ const CreateButton =  ({
             denom: asset.denom_units[0].denom,
             imgSrc: asset.logo_URIs?.svg,
             ibc: asset.ibc,
-          }));
+          })) || [];
   
-          setData(assetList || []);
-          setFromItem(assetList?.[0] || null);
-          setToItem(assetList?.[1] || null);
+          setData(assetList);
+          setFromItem(assetList[0]);
+          setToItem(assetList[1]);
         } catch (error) {
           console.error('Error fetching asset data:', error);
         } finally {

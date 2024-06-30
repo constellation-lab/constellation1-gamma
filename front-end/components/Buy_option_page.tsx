@@ -25,83 +25,96 @@ import { Coin } from "@cosmjs/amino";
 import { useMarketTx } from "../hook";
 
 const BuyButton = ({
-    id,
-    data
-  }: {
-    id:number;
-    data:ListItemData
-})=>{
-    const initialFocusRef = React.useRef()
-    const { assets, address } = useChain(chainName);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const {tx} = useMarketTx(chainName,"unibi",MarketAddress)
-    const getdenomMap =() => {
-        let map = new Map<String,String>()
-        assets.assets.map((value)=>{
-            map.set(value.denom_units[0].denom,value.name)
-        })
-        return map;
-    }
+  id,
+  data
+}: {
+  id: number;
+  data: ListItemData
+}) => {
+  const initialFocusRef = React.useRef<HTMLButtonElement>(null);
+  const { assets, address } = useChain(chainName);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { tx } = useMarketTx(chainName, "unibi", MarketAddress);
 
-    const handleBuy = async () => {
-        setIsSubmitting(true)
-        let msg:ExecuteMsg = {
-            buy:{
-            id:id
-            }
-        }
-        const funds:Coin[]=[{denom:"unibi",amount:data.price}]
-        console.log(msg)
-        await tx(msg,{},funds);
-        setIsSubmitting(false)
-      }
-  
+  const getdenomMap = () => {
+      let map = new Map<string, string>();
+      assets?.assets?.forEach((value) => {
+          if (value.denom_units && value.denom_units.length > 0) {
+              map.set(value.denom_units[0].denom, value.name);
+          }
+      });
+      return map;
+  };
 
-    return (
-        <Popover
-          initialFocusRef={initialFocusRef}
-          placement='bottom'
-        >{({ isOpen, onClose }) => (
-        <>
-          <PopoverTrigger>
-            <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now()>Number(data.expires)/1000000) } size='lg'>Buy it</Button>
-          </PopoverTrigger>
-          <PopoverContent color='white' bg='blue.800' borderColor='blue.800' >
-            <PopoverHeader pt={4} fontWeight='bold' border='10' >
-            You will buy the Option with id: {id} 
-            </PopoverHeader>
-            <PopoverArrow bg='blue.800' />
-            <PopoverCloseButton />
-            <PopoverBody>
-            <VStack align="start" fontWeight="bold" fontSize={{ md: 'lg' }}  mb={1}>
-                <Flex justify="space-between" w = "full"><Text> You need to pay:</Text>
-                 <Text>
-                  {address ? (
-                    `${Number(data.price)/1000000} NIBI`
-                  ) : (
-                    'Connect wallet'
-                  )}
-                 </Text>
-                </Flex> 
-           </VStack>        
+  const handleBuy = async () => {
+      setIsSubmitting(true);
+      let msg: ExecuteMsg = {
+          buy: {
+              id: id
+          }
+      };
+      const funds: Coin[] = [{ denom: "unibi", amount: data.price }];
+      console.log(msg);
+      await tx(msg, {}, funds);
+      setIsSubmitting(false);
+  };
 
-            </PopoverBody>
-
-            <PopoverFooter
-              border='0'
-              display='flex'
-              alignItems='center'
-              justifyContent='center'
-              pb={4}
-            >
-            <Button colorScheme='blue' ref={initialFocusRef} onClick={()=>{onClose();handleBuy();}}>
+  return (
+      <Popover
+        initialFocusRef={initialFocusRef}
+        placement='bottom'
+      >
+        {({ isOpen, onClose }) => (
+          <>
+            <PopoverTrigger>
+              <Button 
+                isLoading={isSubmitting} 
+                colorScheme="primary" 
+                isDisabled={(Date.now() > Number(data.expires) / 1000000)} 
+                size='lg'
+              >
+                Buy it
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+              <PopoverHeader pt={4} fontWeight='bold' border='10'>
+                You will buy the Option with id: {id} 
+              </PopoverHeader>
+              <PopoverArrow bg='blue.800' />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <VStack align="start" fontWeight="bold" fontSize={{ md: 'lg' }} mb={1}>
+                  <Flex justify="space-between" w="full">
+                    <Text>You need to pay:</Text>
+                    <Text>
+                      {address ? (
+                        `${Number(data.price) / 1000000} NIBI`
+                      ) : (
+                        'Connect wallet'
+                      )}
+                    </Text>
+                  </Flex> 
+                </VStack>        
+              </PopoverBody>
+              <PopoverFooter
+                border='0'
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
+                pb={4}
+              >
+                <Button 
+                  colorScheme='blue' 
+                  ref={initialFocusRef} 
+                  onClick={() => { onClose(); handleBuy(); }}
+                >
                   Confirm
-            </Button>
-            </PopoverFooter>
-          </PopoverContent>
-            </>
-          )}
-        </Popover>       
+                </Button>
+              </PopoverFooter>
+            </PopoverContent>
+          </>
+        )}
+      </Popover>       
     )
 
 }
@@ -111,11 +124,15 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
 
   const getDenomMap = () => {
     const map = new Map<string, string>();
-    assets.assets.forEach((value) => {
-      map.set(value.denom_units[0].denom, value.name);
+    assets?.assets?.forEach((value) => {
+      if (value.denom_units && value.denom_units.length > 0) {
+        map.set(value.denom_units[0].denom, value.name);
+      }
     });
     return map;
   };
+
+  const denomMap = getDenomMap();
 
   return (
     <Box className="option-card">
@@ -141,7 +158,7 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
           <Text fontWeight="bold">Collateral:</Text>
           <Text>
             {address ? (
-              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom)}`
+              `${Number(data.collateral.amount) / 1000000} ${denomMap.get(data.collateral.denom) || data.collateral.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>
@@ -154,7 +171,7 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
           <Text fontWeight="bold">Counter Offer:</Text>
           <Text>
             {address ? (
-              `${Number(data.counter_offer.amount) / 1000000} ${getDenomMap().get(data.counter_offer.denom)}`
+              `${Number(data.counter_offer.amount) / 1000000} ${denomMap.get(data.counter_offer.denom) || data.counter_offer.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>
@@ -184,6 +201,7 @@ const OptionCard = ({ data, id }: { data: ListItemData; id: number }) => {
     </Box>
   );
 };
+
 
 export const BuyOptionsList = () => {
   const { address, getCosmWasmClient } = useChain(chainName);

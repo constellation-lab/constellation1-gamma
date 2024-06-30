@@ -31,14 +31,14 @@ import { ExecuteMsg } from "../config/constellation/Constellation.types";
 import { Coin } from "@cosmjs/amino";
 import { useTx } from "../hook";
 
-const TransferButton = ({
+  const TransferButton = ({
     id,
     expires
   }: {
-    id:number;
+    id: number;
     expires: number;
-  })=>{
-    const initialFocusRef = React.useRef()
+  }) => {
+    const initialFocusRef = React.useRef<HTMLButtonElement>(null);
     const { address, getCosmWasmClient } = useChain(chainName);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toAddr, setToAddr] = useState("")
@@ -68,15 +68,16 @@ const TransferButton = ({
         return false
     }
     return (
-        <Popover
-          initialFocusRef={initialFocusRef}
-          placement='bottom'
-        >{({ isOpen, onClose }) => (
-        <>
-          <PopoverTrigger>
-            <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now()>expires/1000000)}>Transfer</Button>
-          </PopoverTrigger>
-          <PopoverContent color='white' bg='blue.800' borderColor='blue.800' >
+      <Popover
+        initialFocusRef={initialFocusRef}
+        placement='bottom'
+      >
+        {({ isOpen, onClose }) => (
+          <>
+            <PopoverTrigger>
+              <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now() > expires / 1000000)}>Transfer</Button>
+            </PopoverTrigger>
+            <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
             <PopoverHeader pt={4} fontWeight='bold' border='10' >
               Option ID: {id} 
             </PopoverHeader>
@@ -99,37 +100,45 @@ const TransferButton = ({
               justifyContent='center'
               pb={4}
             >
-            <Button colorScheme='blue' ref={initialFocusRef} onClick={()=>{onClose();handleTransferOption();}} isDisabled = {validateAddr()}>
-                  Confirm
-            </Button>
+              <Button 
+                colorScheme='blue' 
+                ref={initialFocusRef} 
+                onClick={() => { onClose(); handleTransferOption(); }}
+                isDisabled={validateAddr()}
+              >
+                Confirm
+              </Button>
             </PopoverFooter>
           </PopoverContent>
-            </>
-          )}
-        </Popover>       
+        </>
+      )}
+    </Popover>       
     )
 
 }
 
-const ExeButton = ({
+  const ExeButton = ({
     id,
     data
   }: {
-    id:number;
-    data:Data
-})=>{
-    const initialFocusRef = React.useRef()
+    id: number;
+    data: Data
+  }) => {
+    const initialFocusRef = React.useRef<HTMLButtonElement>(null);
     const { address, assets } = useChain(chainName);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [toAddr, setToAddr] = useState("")
-    const {tx} = useTx(chainName,"unibi",contractAddress)
-    const getdenomMap =() => {
-        let map = new Map<String,String>()
-        assets.assets.map((value)=>{
-            map.set(value.denom_units[0].denom,value.name)
-        })
+    const [toAddr, setToAddr] = useState("");
+    const { tx } = useTx(chainName, "unibi", contractAddress);
+    
+    const getdenomMap = () => {
+        let map = new Map<string, string>();
+        assets?.assets?.forEach((value) => {
+            if (value.denom_units && value.denom_units.length > 0) {
+                map.set(value.denom_units[0].denom, value.name);
+            }
+        });
         return map;
-    }
+    };
 
     const handleExecuteOption = async () => {
         setIsSubmitting(true)
@@ -197,16 +206,16 @@ const ExeButton = ({
 
 
 
-const SplitButton = ({
+  const SplitButton = ({
     id,
     data,
     expires
   }: {
-    id:number;
-    data:Data;
+    id: number;
+    data: Data;
     expires: number;
-  })=>{
-    const initialFocusRef = React.useRef()
+  }) => {
+    const initialFocusRef = React.useRef<HTMLButtonElement>(null);
     const { assets } = useChain(chainName);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [price, setPrice] = useState(0)
@@ -226,66 +235,73 @@ const SplitButton = ({
       }
   
 
-    return (
+      return (
         <Popover
           initialFocusRef={initialFocusRef}
           placement='bottom'
-        >{({ isOpen, onClose }) => (
-        <>
-          <PopoverTrigger>
-            <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now()>expires/1000000)} >Split</Button>
-          </PopoverTrigger>
-          <PopoverContent color='white' bg='blue.800' borderColor='blue.800' >
-           <PopoverHeader pt={4} fontWeight='bold' border='10' >
-              Please input the percentage you want to split:
-            </PopoverHeader>
-            <PopoverArrow bg='blue.800' />
-            <PopoverCloseButton />
-            <PopoverBody>
-            Set percentage {price}:
-            <Box flex={1}>
-              <Slider
-                flex='1'
-                focusThumbOnChange={false}
-                value={price}
-                onChange={setPrice}
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-              <SliderThumb fontSize='sm' boxSize='32px' />
-            </Slider>
-            </Box>
-            </PopoverBody>
-
-            <PopoverFooter
-              border='0'
-              display='flex'
-              alignItems='center'
-              justifyContent='center'
-              pb={4}
-            >
-            <Button colorScheme='blue' ref={initialFocusRef} onClick={()=>{onClose();handleSplit();}}>
-                  Confirm
-            </Button>
-            </PopoverFooter>
-          </PopoverContent>
+        >
+          {({ isOpen, onClose }) => (
+            <>
+              <PopoverTrigger>
+                <Button isLoading={isSubmitting} colorScheme="primary" isDisabled={(Date.now() > expires / 1000000)}>Split</Button>
+              </PopoverTrigger>
+              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
+                <PopoverHeader pt={4} fontWeight='bold' border='10'>
+                  Please input the percentage you want to split:
+                </PopoverHeader>
+                <PopoverArrow bg='blue.800' />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  Set percentage {price}:
+                  <Box flex={1}>
+                    <Slider
+                      flex='1'
+                      focusThumbOnChange={false}
+                      value={price}
+                      onChange={setPrice}
+                    >
+                      <SliderTrack>
+                        <SliderFilledTrack />
+                      </SliderTrack>
+                      <SliderThumb fontSize='sm' boxSize='32px' />
+                    </Slider>
+                  </Box>
+                </PopoverBody>
+                <PopoverFooter
+                  border='0'
+                  display='flex'
+                  alignItems='center'
+                  justifyContent='center'
+                  pb={4}
+                >
+                  <Button 
+                    colorScheme='blue' 
+                    ref={initialFocusRef} 
+                    onClick={() => { onClose(); handleSplit(); }}
+                  >
+                    Confirm
+                  </Button>
+                </PopoverFooter>
+              </PopoverContent>
             </>
           )}
         </Popover>       
     )
 
 }
-const OptionCard = ({ data, id }: { data: Data; id: number }) => {
-  const { assets, address } = useChain(chainName);
+  const OptionCard = ({ data, id }: { data: Data; id: number }) => {
+    const { assets, address } = useChain(chainName);
 
-  const getDenomMap = () => {
-    const map = new Map<string, string>();
-    assets.assets.forEach((value) => {
-      map.set(value.denom_units[0].denom, value.name);
-    });
-    return map;
-  };
+    const getDenomMap = () => {
+      const map = new Map<string, string>();
+      assets?.assets?.forEach((value) => {
+        if (value.denom_units && value.denom_units.length > 0) {
+          map.set(value.denom_units[0].denom, value.name);
+        }
+      });
+      return map;
+    };
+
 
   return (
     <Box className="option-card">
@@ -304,8 +320,8 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Collateral:</Text>
           <Text>
-            {address ? (
-              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom)}`
+            {address && assets ? (
+              `${Number(data.collateral.amount) / 1000000} ${getDenomMap().get(data.collateral.denom) || data.collateral.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>
@@ -317,8 +333,8 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Counter Offer:</Text>
           <Text>
-            {address ? (
-              `${Number(data.counter_offer.amount) / 1000000} ${getDenomMap().get(data.counter_offer.denom)}`
+            {address && assets ? (
+              `${Number(data.counter_offer.amount) / 1000000} ${getDenomMap().get(data.counter_offer.denom) || data.counter_offer.denom}`
             ) : (
               <Tooltip label="Connect wallet to see the value" placement="top">
                 <Text cursor="default">-</Text>
@@ -326,7 +342,6 @@ const OptionCard = ({ data, id }: { data: Data; id: number }) => {
             )}
           </Text>
         </Flex>
-
         <Flex justify="space-between" w="full">
           <Text fontWeight="bold">Expiration Date:</Text>
           <Text>{new Date(Number(data.expires) / 1000000).toDateString()}</Text>

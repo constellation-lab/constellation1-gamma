@@ -1,0 +1,776 @@
+{
+    "contract_name": "incentive_manager",
+    "contract_version": "0.1.0",
+    "idl_version": "1.0.0",
+    "instantiate": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "InstantiateMsg",
+      "type": "object",
+      "required": [
+        "cdt_token_contract",
+        "cnste_token_contract",
+        "constella_option_contract",
+        "cpst_token_contract",
+        "fee_distributor",
+        "governance_token",
+        "liquidity_pool_contract",
+        "option_marketplace_contract",
+        "pricing_oracle_contract"
+      ],
+      "properties": {
+        "cdt_token_contract": {
+          "type": "string"
+        },
+        "cnste_token_contract": {
+          "type": "string"
+        },
+        "constella_option_contract": {
+          "type": "string"
+        },
+        "cpst_token_contract": {
+          "type": "string"
+        },
+        "fee_distributor": {
+          "type": "string"
+        },
+        "governance_token": {
+          "type": "string"
+        },
+        "liquidity_pool_contract": {
+          "type": "string"
+        },
+        "option_marketplace_contract": {
+          "type": "string"
+        },
+        "pricing_oracle_contract": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "execute": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ExecuteMsg",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "create_yield_farming_program"
+          ],
+          "properties": {
+            "create_yield_farming_program": {
+              "type": "object",
+              "required": [
+                "end_time",
+                "program_id",
+                "reward_rate",
+                "reward_token",
+                "start_time"
+              ],
+              "properties": {
+                "end_time": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                },
+                "program_id": {
+                  "type": "string"
+                },
+                "reward_rate": {
+                  "$ref": "#/definitions/Uint128"
+                },
+                "reward_token": {
+                  "type": "string"
+                },
+                "start_time": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "create_liquidity_mining_program"
+          ],
+          "properties": {
+            "create_liquidity_mining_program": {
+              "type": "object",
+              "required": [
+                "end_time",
+                "option_pair",
+                "program_id",
+                "reward_multiplier",
+                "start_time"
+              ],
+              "properties": {
+                "end_time": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                },
+                "option_pair": {
+                  "type": "string"
+                },
+                "program_id": {
+                  "type": "string"
+                },
+                "reward_multiplier": {
+                  "$ref": "#/definitions/Uint128"
+                },
+                "start_time": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "create_cnste_staking_program"
+          ],
+          "properties": {
+            "create_cnste_staking_program": {
+              "type": "object",
+              "required": [
+                "last_update_time",
+                "program_id",
+                "reward_per_token_stored"
+              ],
+              "properties": {
+                "last_update_time": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                },
+                "program_id": {
+                  "type": "string"
+                },
+                "reward_per_token_stored": {
+                  "$ref": "#/definitions/Uint128"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "stake"
+          ],
+          "properties": {
+            "stake": {
+              "type": "object",
+              "required": [
+                "amount",
+                "program_id"
+              ],
+              "properties": {
+                "amount": {
+                  "$ref": "#/definitions/Uint128"
+                },
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "unstake"
+          ],
+          "properties": {
+            "unstake": {
+              "type": "object",
+              "required": [
+                "amount",
+                "program_id"
+              ],
+              "properties": {
+                "amount": {
+                  "$ref": "#/definitions/Uint128"
+                },
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "claim_rewards"
+          ],
+          "properties": {
+            "claim_rewards": {
+              "type": "object",
+              "required": [
+                "program_id"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "distribute_performance_fees"
+          ],
+          "properties": {
+            "distribute_performance_fees": {
+              "type": "object",
+              "required": [
+                "amount"
+              ],
+              "properties": {
+                "amount": {
+                  "$ref": "#/definitions/Uint128"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "The `Cw20ReceiveMsg` should be de/serialized with `to_binary` and `from_binary` instead of `json!()`",
+          "type": "object",
+          "required": [
+            "receive"
+          ],
+          "properties": {
+            "receive": {
+              "$ref": "#/definitions/Cw20ReceiveMsg"
+            }
+          },
+          "additionalProperties": false
+        }
+      ],
+      "definitions": {
+        "Cw20ReceiveMsg": {
+          "description": "Cw20ReceiveMsg should be de/serialized with `to_binary` and `from_binary`",
+          "type": "object",
+          "required": [
+            "amount",
+            "msg",
+            "sender"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "msg": {
+              "$ref": "#/definitions/Binary"
+            },
+            "sender": {
+              "type": "string"
+            }
+          }
+        },
+        "Binary": {
+          "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde_json's support for Vec<u8> is not const friendly.",
+          "type": "string"
+        },
+        "Uint128": {
+          "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+          "type": "string"
+        }
+      }
+    },
+    "query": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QueryMsg",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "config"
+          ],
+          "properties": {
+            "config": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "yield_farming_program"
+          ],
+          "properties": {
+            "yield_farming_program": {
+              "type": "object",
+              "required": [
+                "program_id"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "liquidity_mining_program"
+          ],
+          "properties": {
+            "liquidity_mining_program": {
+              "type": "object",
+              "required": [
+                "program_id"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "user_staked_amount"
+          ],
+          "properties": {
+            "user_staked_amount": {
+              "type": "object",
+              "required": [
+                "program_id",
+                "user"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "user_reward_per_token_paid"
+          ],
+          "properties": {
+            "user_reward_per_token_paid": {
+              "type": "object",
+              "required": [
+                "program_id",
+                "user"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "total_fees_distributed"
+          ],
+          "properties": {
+            "total_fees_distributed": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "get_pool_info"
+          ],
+          "properties": {
+            "get_pool_info": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "cnste_staking_program"
+          ],
+          "properties": {
+            "cnste_staking_program": {
+              "type": "object",
+              "required": [
+                "program_id"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "user_cnste_staked_amount"
+          ],
+          "properties": {
+            "user_cnste_staked_amount": {
+              "type": "object",
+              "required": [
+                "program_id",
+                "user"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "total_cnste_staked_amount"
+          ],
+          "properties": {
+            "total_cnste_staked_amount": {
+              "type": "object",
+              "required": [
+                "program_id"
+              ],
+              "properties": {
+                "program_id": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "cnste_reward_pool"
+          ],
+          "properties": {
+            "cnste_reward_pool": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "migrate": null,
+    "sudo": null,
+    "responses": {
+      "config": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Config",
+        "type": "object",
+        "required": [
+          "cdt_token_contract",
+          "cnste_token_contract",
+          "constella_option_contract",
+          "cpst_token_contract",
+          "fee_distributor",
+          "governance_token",
+          "incentive_manager_contract",
+          "liquidity_pool_contract",
+          "option_marketplace_contract",
+          "pricing_oracle_contract"
+        ],
+        "properties": {
+          "cdt_token_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "cnste_token_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "constella_option_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "cpst_token_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "fee_distributor": {
+            "$ref": "#/definitions/Addr"
+          },
+          "governance_token": {
+            "$ref": "#/definitions/Addr"
+          },
+          "incentive_manager_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "liquidity_pool_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "option_marketplace_contract": {
+            "$ref": "#/definitions/Addr"
+          },
+          "pricing_oracle_contract": {
+            "$ref": "#/definitions/Addr"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Addr": {
+            "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+            "type": "string"
+          }
+        }
+      },
+      "yield_farming_program": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "YieldFarmingProgram",
+        "type": "object",
+        "required": [
+          "end_time",
+          "last_update_time",
+          "program_id",
+          "reward_per_token_stored",
+          "reward_rate",
+          "reward_token",
+          "start_time",
+          "total_staked"
+        ],
+        "properties": {
+          "end_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "last_update_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "program_id": {
+            "type": "string"
+          },
+          "reward_per_token_stored": {
+            "$ref": "#/definitions/Uint128"
+          },
+          "reward_rate": {
+            "$ref": "#/definitions/Uint128"
+          },
+          "reward_token": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "total_staked": {
+            "$ref": "#/definitions/Uint128"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Uint128": {
+            "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+            "type": "string"
+          }
+        }
+      },
+      "liquidity_mining_program": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "LiquidityMiningProgram",
+        "type": "object",
+        "required": [
+          "end_time",
+          "last_update_time",
+          "option_pair",
+          "program_id",
+          "reward_multiplier",
+          "reward_per_token_stored",
+          "start_time",
+          "total_liquidity"
+        ],
+        "properties": {
+          "end_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "last_update_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "option_pair": {
+            "type": "string"
+          },
+          "program_id": {
+            "type": "string"
+          },
+          "reward_multiplier": {
+            "$ref": "#/definitions/Uint128"
+          },
+          "reward_per_token_stored": {
+            "$ref": "#/definitions/Uint128"
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "total_liquidity": {
+            "$ref": "#/definitions/Uint128"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Uint128": {
+            "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+            "type": "string"
+          }
+        }
+      },
+      "user_staked_amount": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Uint128",
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
+      "user_reward_per_token_paid": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Uint128",
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
+      "total_fees_distributed": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Uint128",
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
+      "get_pool_info": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "PoolInfo",
+        "type": "object",
+        "required": [
+          "total_liquidity"
+        ],
+        "properties": {
+          "total_liquidity": {
+            "$ref": "#/definitions/Uint128"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Uint128": {
+            "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+            "type": "string"
+          }
+        }
+      },
+      "cnste_staking_program": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "CnsteStakingProgramInfo",
+        "type": "object",
+        "required": [
+          "last_update_time",
+          "program_id",
+          "reward_per_token_stored"
+        ],
+        "properties": {
+          "last_update_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "program_id": {
+            "type": "string"
+          },
+          "reward_per_token_stored": {
+            "$ref": "#/definitions/Uint128"
+          }
+        },
+        "additionalProperties": false,
+        "definitions": {
+          "Uint128": {
+            "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+            "type": "string"
+          }
+        }
+      },
+      "user_cnste_staked_amount": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Uint128",
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
+      "total_cnste_staked_amount": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Uint128",
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
+      "cnste_reward_pool": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Uint128",
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      }
+    }
+  }

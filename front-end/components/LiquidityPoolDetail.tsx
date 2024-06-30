@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Heading, Text, Button, Flex, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Box, Heading, Text, Input, Button, Flex, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { useChain } from '@cosmos-kit/react';
 import { LiquidityPool, Asset } from '../config/liquidity_pool/liquidity_pool.types';
 import { LiquidityPoolClient, LiquidityPoolQueryClient } from '../config/liquidity_pool/liquidity_pool.client';
@@ -70,12 +70,14 @@ const LiquidityPoolDetail: React.FC<{ poolId: string }> = ({ poolId }) => {
       <Text mb={4}>Token 2: {pool.assets[1].denom}</Text>
       <Flex align="center" mb={4}>
         <Text mr={2}>Amount:</Text>
-        <input
+        <Input
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          placeholder="Enter amount"
+          aria-label="Amount"
         />
-      </Flex>
+    </Flex>
       <Button onClick={handleAddLiquidity} colorScheme="blue">
         Add Liquidity
       </Button>
